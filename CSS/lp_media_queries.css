@@ -1,0 +1,74 @@
+
+@media screen and (max-width:1080px){
+    body{
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+    }  
+    .breadcrumb-content h1{
+        line-height: 1.0;
+    }
+    .properties-main{
+        width: 100%;
+        padding: 0;
+    }
+    .properties-main .grid-wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    }
+    .first-column .sales-header-wrapper{
+        display: none;
+        /* border: 1px solid red; */
+    }
+    .first-column .sale-header-content p{
+    background-color: #e5e7eb;
+    padding: 1.5rem 1rem;
+    margin-bottom: 3rem;
+    }
+
+    .second-column .sales-header-wrapper{
+    display: block;
+    margin-bottom: 30px;
+    }
+
+    .sale-header-content h1{
+    font-weight: 200;
+    padding-bottom: 2rem;
+    }
+
+    .second-column .sale-header-content p{
+    background-color: #e5e7eb;
+    padding: 1.5rem 1rem;
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+    }
+
+     .second-column .social-media-wrapper{
+        display: none;
+    }
+     .second-column  .discover-more-wrapper{
+        display: none;
+     }
+    .form-row .select-group{
+    width: 50%;
+    }
+    .form-row .select-group select{
+    width: 100%;
+    }
+    .property-list {
+        display: block;
+    }
+    .property-list .card{
+        margin: 3rem 0;
+    }
+    .pagination-main{
+        width: 100%;
+        overflow: hidden;
+    }
+    .pagination-main .pagination li:nth-child(7),
+    .pagination-main .pagination li:nth-child(8){
+        display: none;
+    }
+}
