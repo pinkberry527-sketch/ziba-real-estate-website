@@ -1,0 +1,183 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+:root{
+    --primary-color:#2D463E;
+    --secondary-color:#E5E7EB;
+    --accent-color:#D97706;
+    --text-color:#1F2937;
+    --bg-color:#F5F2ED;
+    --bg-color-light:#F9FAFB;
+    --bg-color-dark:#111827;
+    --text-color-light:#F9FAFB;
+    --text-color-dark:#111827;
+    --error-color:#EF4444;
+    --success-color:#10B981;
+    --warning-color:#F59E0B;
+    --info-color:#3B82F6;
+    --nutral-white-color:#ffffff;
+    --nutral-black-color:#000000;
+    --nutral-gray-color:#6B7280;
+    --muted-text-color:#6B7280;
+    --border-color:#E5E7EB;
+    --card-bg:#FFFFFF;
+    --button-color:#D97706;
+    --button-hover-color:#B45309;
+    --button-text-color:#FFFFFF;
+    --main-button-border-radius:40px;
+    --secondary-button-border-radius:16px;
+    --input-border-radius:8px;
+    --card-border-radius:24px;
+    --text-size-sm:12px;
+    --text-size-md:16px;
+    --text-size-lg:20px;
+    --text-size-xl:24px;
+    --text-size-2xl:32px;
+    --text-size-3xl:40px;
+    --text-size-4xl:48px;
+    --text-size-5xl:64px;
+    --heading-font-family:fraunces, serif;
+    --body-font-family:inter , sans-serif;
+    --font-weight-normal:400;
+    --font-weight-medium:500;
+    --font-weight-semibold:600;
+    --font-weight-bold:700;
+    --font-weight-extrabold:800;
+    --font-weight-black:900;
+    --spacing-xs:4px;
+    --spacing-sm:8px;
+    --spacing-md:16px;
+    --spacing-lg:24px;
+    --spacing-xl:32px;
+    --spacing-2xl:48px;
+    --spacing-3xl:64px;
+    --spacing-4xl:96px;
+    --spacing-5xl:128px;
+    --padding-sm:8px;
+    --padding-md:16px;
+    --padding-lg:24px;
+    --padding-xl:32px;
+    --padding-2xl:48px;
+    --padding-3xl:64px;
+    --padding-4xl:96px;
+    --padding-5xl:128px;
+    --margin-sm:8px;
+    --margin-md:16px;
+    --margin-lg:24px;
+    --margin-xl:32px;
+    --margin-2xl:48px;
+    --margin-3xl:64px;
+    --margin-4xl:96px;
+    --margin-5xl:128px;
+    --shadow-sm:0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md:0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg:0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --screen-break-point-sm:640px;
+    --screen-break-point-md:768px;
+    --screen-break-point-lg:1024px;
+    --screen-break-point-xl:1280px;
+    --screen-break-point-2xl:1536px;
+    --transition-sm:0.1s ease-in-out;
+    --transition-md:0.2s ease-in-out;
+    --transition-lg:0.3s ease-in-out;
+    --transition-xl:0.4s ease-in-out;
+    --footer-bg-color: #101816;
+    --transition-2xl:0.5s ease-in-out;
+    
+
+}
+
+
+body{
+    background-color: var(--bg-color);
+}
+
+header{
+   background: linear-gradient(180deg, var(--primary-color) 85%, var(--secondary-color));
+    height: 85vh;
+    width: 100%;
+    padding:var(--padding-2xl) 0;
+}
+/* nav bar styling */
+
+.nav_bar{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto; 
+}
+
+.logo{
+    width: 200px;
+    height: 100px;
+}
+
+.logo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nav_links ul{
+    display: flex;
+    gap: 50px;
+}
+
+.nav_links ul li a{
+    color: var(--nutral-white-color);
+    font-size: var(--text-size-lg);
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-md);
+    font-family: var(--body-font-family);
+}
+
+.nav_links ul li a:hover{
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-underline-offset: 10px;
+    transition: var(--transition-md);
+}
+
+.nav_btn button{
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: var(--padding-md) var(--padding-2xl);
+    border-radius: var(--main-button-border-radius);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+.nav_btn button a{
+    color: var(--nutral-white-color);
+    font-size: var(--text-size-lg);
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-md);
+    font-family: var(--body-font-family);
+    position: relative;
+    z-index: 1;
+}
+.nav_btn button::before{
+     content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(-100%);
+    background-color: var(--button-hover-color);
+    border-radius: 50px;
+    z-index: -1;
+    transition: var(--transition-md);
+}
+.nav_btn button:hover::before{
+    transform: translateX(0);
+    transition: var(--transition-md);
+}
