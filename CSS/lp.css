@@ -135,6 +135,10 @@ header{
     font-weight: var(--font-weight-medium);
     transition: var(--transition-md);
     font-family: var(--body-font-family);
+    display: inline-block;
+    padding: 5px 10px;
+    position: relative;
+    z-index: 10;
 }
 
 .nav_links ul li a:hover{
@@ -953,9 +957,14 @@ footer{
 
 /* RESPONSIVE STYLES */
 
-@media (max-width: 1444px) {
+@media (max-width: 1440px) {
     .nav_links ul {
         gap: 20px;
+    }
+    header {
+        height: 98%;
+        min-height: 90vh;
+        padding-bottom: 100px;
     }
     .hero_content h1 {
         font-size: var(--text-size-4xl);
@@ -993,7 +1002,7 @@ footer{
 
 @media (max-width: 1024px) {
     header {
-        height: auto;
+        height: 95%;
         min-height: 85vh;
         padding-bottom: 120px;
     }
@@ -1067,7 +1076,9 @@ footer{
 
 @media (max-width: 768px) {
     header {
-        height: auto;
+        height: 98%;
+        min-height: 90vh;
+        padding-bottom: 50px;
     }
     .nav_bar {
 
@@ -1084,8 +1095,11 @@ footer{
         display: none;
     }
     .nav_btn button{
-        padding: var(--padding-md) var(--padding-lg);
+        padding: var(--padding-sm) var(--padding-lg);
+        font-size: var(--text-size-xs);
     }
+    
+
     #mobile_nav_btn{
         display: block;
         font-size: var(--text-size-2xl);
@@ -1094,35 +1108,81 @@ footer{
         transition: var(--transition-md);
     }
     .mobile_nav{
-        display: flex;
+        display: none;
         flex-direction: column;
         gap: 20px;
         position: absolute;
-        top: 100%;
+        top: 0;
         left: 0;
-        width: 50%;
-        background-color: var(--primary-color);
-        padding: var(--padding-2xl);
+        width: 60%;
+        height: 100vh;
+        background-color: var(--footer-bg-color);
+        padding: var(--padding-2xl) var(--padding-lg);
         z-index: 1000;
     }
+    .mobile_nav.active{
+        display: flex;
+    }
+    .mobile_nav_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: var(--margin-lg);
+    }
+    .mobile_nav_header .logo {
+        width: 120px;
+        height: 60px;
+    }
+    #mobile_nav_close{
+        font-size: var(--text-size-2xl);
+        color: var(--nutral-white-color);
+        cursor: pointer;
+    }
+    /* .mobile_nav_btn button {
+        background-color: var(--button-color);
+        color: var(--button-text-color);
+        border: none;
+        padding: var(--padding-md) var(--padding-lg);
+        border-radius: var(--main-button-border-radius);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin-top: var(--margin-lg);
+    } */
+    /* .mobile_nav_btn button a {
+        color: var(--nutral-white-color);
+        font-size: var(--text-size-lg);
+        font-weight: var(--font-weight-medium);
+        font-family: var(--body-font-family);
+    } */
     .mobile_nav ul{
         display: flex;
         flex-direction: column;
         gap: 20px;
     }
-    .mobile_nav ul li a{
+    .mobile_nav_body ul li{
+        width: 100%;
+        
+        transition: var(--transition-md);
+    }
+    .mobile_nav_body ul li:hover{
+        background-color: var(--accent-color);
+    }
+    .mobile_nav_body ul li a{
+        display: block;
         color: var(--nutral-white-color);
-        font-size: var(--text-size-lg);
+        font-size: var(--text-size-md);
         font-weight: var(--font-weight-medium);
         transition: var(--transition-md);
         font-family: var(--body-font-family);
+        padding: 10px 0;
     }
-    .mobile_nav ul li a:hover{
-        color: var(--accent-color);
-        text-decoration: underline;
-        text-underline-offset: 10px;
-        transition: var(--transition-md);
-    }
+    /* .mobile_nav_footer {
+        margin-top: 50px;
+        display: flex;
+    } */
     #mobile_nav_btn:hover{
         color: var(--accent-color);
     }
@@ -1223,6 +1283,11 @@ footer{
     .hero_img {
         width: 100%;
     }
+
+     .mobile_nav{
+        width: 100%;
+        height: 100vh;
+     }
 }
 
 
