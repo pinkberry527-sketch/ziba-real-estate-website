@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/dash.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="JS/dash.js"></script>
+    <title>ZIBA</title>
+</head>
+
+<body>
+    <!-- ==================== APP SHELL ==================== -->
+    <div id="app" class="app">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-container">
+                    <img src="/assets/WhatsApp_Image_2026-04-07_at_18.35.51-removebg-preview.png" alt="ZIBA Logo"
+                        class="logo" width="200px">
+
+
+                </div>
+                <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav"></nav>
+            <div class="sidebar-footer">
+                <div class="user-mini">
+                    <div class="user-avatar">TM</div>
+                    <div class="user-info">
+                        <span class="user-name">Tobi Moffy</span>
+                        <span class="user-role" id="userRoleLabel">Agent</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main">
+            <!-- Top Navigation Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+                </div>
+                <div class="topbar-right">
+                    <div class="role-switcher">
+                        <!-- <span class="role-label">View as:</span> -->
+                        <button class="role-btn active" data-role="agent" id="roleAgent">Agent</button>
+                        <button class="role-btn" data-role="user" id="roleUser">User</button>
+                    </div>
+                    <button class="topbar-icon" id="notifBtn" aria-label="Notifications">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <span class="notif-badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content" id="content"></div>
+        </main>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    
+    <div class="modal-overlay" id="addPropertyModal">
+        <div class="modal modal--large">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Property</h2>
+                <button class="modal-close" id="closeAddModal" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form class="modal-body" id="addPropertyForm">
+                <div class="form-grid form-grid--2">
+                    <div class="form-group">
+                        <label class="form-label" for="propTitle">Property Title</label>
+                        <input type="text" class="form-input" id="propTitle"
+                            placeholder="e.g. Modern Villa in Beverly Hills" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propPrice">Price</label>
+                        <input type="text" class="form-input" id="propPrice" placeholder="e.g. $2,450,000" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propLocation">Location</label>
+                        <input type="text" class="form-input" id="propLocation"
+                            placeholder="e.g. 123 Sunset Blvd, Los Angeles, CA" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propType">Property Type</label>
+                        <select class="form-select" id="propType" required>
+                            <option value="">Select type</option>
+                            <option value="House">House</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Condo">Condo</option>
+                            <option value="Townhouse">Townhouse</option>
+                            <option value="Penthouse">Penthouse</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propListingType">Listing Type</label>
+                        <select class="form-select" id="propListingType" required>
+                            <option value="">Select listing type</option>
+                            <option value="Sale">For Sale</option>
+                            <option value="Rent">For Rent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propStatus">Status</label>
+                        <select class="form-select" id="propStatus" required>
+                            <option value="">Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Rented">Rented</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="propDescription">Description</label>
+                    <textarea class="form-textarea" id="propDescription" rows="4"
+                        placeholder="Describe the property features, amenities, and highlights..." required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--secondary" id="cancelAddBtn">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Publish Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Property Modal -->
+    <div class="modal-overlay" id="editPropertyModal">
+        <div class="modal modal--large">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Property</h2>
+                <button class="modal-close" id="closeEditModal" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form class="modal-body" id="editPropertyForm">
+                <input type="hidden" id="editPropId">
+                <div class="form-grid form-grid--2">
+                    <div class="form-group">
+                        <label class="form-label" for="editPropTitle">Property Title</label>
+                        <input type="text" class="form-input" id="editPropTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropPrice">Price</label>
+                        <input type="text" class="form-input" id="editPropPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropLocation">Location</label>
+                        <input type="text" class="form-input" id="editPropLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropType">Property Type</label>
+                        <select class="form-select" id="editPropType" required>
+                            <option value="House">House</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Condo">Condo</option>
+                            <option value="Townhouse">Townhouse</option>
+                            <option value="Penthouse">Penthouse</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropListingType">Listing Type</label>
+                        <select class="form-select" id="editPropListingType" required>
+                            <option value="Sale">For Sale</option>
+                            <option value="Rent">For Rent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropStatus">Status</label>
+                        <select class="form-select" id="editPropStatus" required>
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Rented">Rented</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editPropDescription">Description</label>
+                    <textarea class="form-textarea" id="editPropDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Property Details Modal (User View) -->
+    <div class="modal-overlay" id="propertyDetailsModal">
+        <div class="modal modal--xl">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detailTitle">Property Details</h2>
+                <button class="modal-close" id="closeDetailModal" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="detailBody"></div>
+        </div>
+    </div>
+
+    <!-- Inquiry Modal -->
+    <div class="modal-overlay" id="inquiryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Send Inquiry</h2>
+                <button class="modal-close" id="closeInquiryModal" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form class="modal-body" id="inquiryForm">
+                <input type="hidden" id="inquiryPropId">
+                <div class="form-group">
+                    <label class="form-label" for="inquiryName">Full Name</label>
+                    <input type="text" class="form-input" id="inquiryName" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inquiryEmail">Email</label>
+                    <input type="email" class="form-input" id="inquiryEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inquiryPhone">Phone</label>
+                    <input type="tel" class="form-input" id="inquiryPhone" placeholder="+1 (555) 000-0000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inquiryMessage">Message</label>
+                    <textarea class="form-textarea" id="inquiryMessage" rows="4"
+                        placeholder="I'm interested in this property and would like to schedule a viewing..."
+                        required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--secondary" id="cancelInquiryBtn">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Send Inquiry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+</body>
+
+</html>
