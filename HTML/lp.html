@@ -1,35 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/lp.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kumbh+Sans:wght,YOPQ@100..900,300&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+Caucasian+Albanian&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<link rel="shortcut icon" href="../assets/favicon.png" type="image/x-icon">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../CSS/lp.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kumbh+Sans:wght,YOPQ@100..900,300&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+Caucasian+Albanian&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="../assets/favicon.png"
+      type="image/x-icon"
+    />
     <title>Ziba</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <nav class="nav_bar">
-            <div class="logo">
-                <img src="../assets/logo.jpeg" alt="logo">
-            </div>
-            <div class="nav_links">
-                <ul>
-                    <li><a href="#">sales</a></li>
-                    <li><a href="#">Leasing</a></li>
-                    <li><a href="#">Stay</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Partners</a></li>
-                </ul>
-            </div>
-            <div class="nav_btn">
-                <button><a href="#">Login</a></button>
-            </div>
-        </nav>
+      <nav class="nav_bar">
+        <div class="logo">
+          <img src="../assets/logo.jpeg" alt="logo" />
+        </div>
+        <div class="nav_links">
+          <ul>
+            <li><a href="#">Sales</a></li>
+            <li><a href="#">Leasing</a></li>
+            <li><a href="#">Stay</a></li>
+            <li><a href="../HTML/Contact.html">Contact</a></li>
+            <li><a href="#">Partners</a></li>
+          </ul>
+        </div>
+        <i class="fa-solid fa-bars" id="mobile_nav_btn"></i>
+        <div class="nav_btn">
+          <button><a href="#">Login</a></button>
+        </div>
+        
+        <div class="mobile_nav">
+          <i class="fa-solid fa-xmark" id="mobile_nav_close"></i>
+          <ul>
+            <li><a href="#">Sales</a></li>
+            <li><a href="#">Leasing</a></li>
+            <li><a href="#">Stay</a></li>
+            <li><a href="../HTML/Contact.html">Contact</a></li>
+            <li><a href="#">Partners</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="hero_section">
+        <div class="hero_content">
+          <h1>Elevate Your Address</h1>
+          <p>
+            Discover a new standard of living in Lagos. We curate the finest
+            selection of premium properties,whether you’re seeking to buy,
+            lease, or stay. Experience thoughtfully designed spaces, exceptional
+            locations, and personalized service at every step. Let us help you
+            find a place that truly feels like home, elevated to match your
+            aspirations
+          </p>
+          <div class="hero_btn">
+            <button class="primary_btn">
+              <a href="#">Explore Properties</a>
+            </button>
+            <button class="secondary_btn">
+              <a href="#">List Your Property</a>
+            </button>
+          </div>
+        </div>
+        <div class="hero_img">
+          <img
+            src="/assets/view-3d-house-model.png"
+            alt=""
+          />
+        </div>
+      </div>
     </header>
-</body>
+    <main>
+      <div class="search_box">
+        <input type="text" placeholder="Lagos" />
+        <select name="" id="">
+          <option value="">all types</option>
+          <option value="">Apartment</option>
+          <option value="">House</option>
+          <option value="">Land</option>
+          <option value="">Comercial Property</option>
+        </select>
+        <select name="" id="">
+          <option value="">Sales</option>
+          <option value="">Leasing</option>
+          <option value="">Stay</option>
+        </select>
+        <button><a href="#">Search</a></button>
+      </div>
+
+      <div class="featured_property" id="featured_property">
+        <div class="featured_property_header">
+          <h1>explore new property listing</h1>
+          <p>Discover our curated selection of premium properties</p>
+        </div>
+        <div class="featured_property_filter">
+          <div class="filter_items" id="filter_items">
+            <div class="filter_item" data-type="All">
+              <button>All</button>
+            </div>
+            <div class="filter_item" data-type="Apartment">
+              <button>Apartment</button>
+            </div>
+            <div class="filter_item" data-type="House">
+              <button>House</button>
+            </div>
+            <div class="filter_item" data-type="Land">
+              <button>Land</button>
+            </div>
+            <div class="filter_item" data-type="Commercial Property">
+              <button>Commercial Property</button>
+            </div>
+            <div class="filter_item" >
+              <button>View All</button>
+            </div>
+          </div>
+        </div>
+        <div class="featured_list" id="featured_list">
+          <!-- <div class="list_item">
+            <img src="/assets/property 1.jpg" alt="" />
+            <div class="list_item_content">
+              <h3>4 Bedroom Duplex</h3>
+              <p>Ikoyi, Lagos</p>
+              <p>$500,000</p>
+              <div class="list_item_content_footer">
+                <button>View Details</button>
+              </div>
+            </div>
+          </div>
+          <div class="list_item">
+            <img src="/assets/property 2.jpg" alt="" />
+            <div class="list_item_content">
+              <h3>4 Bedroom Duplex</h3>
+              <p>Lekki, Lagos</p>
+              <p>$500,000</p>
+              <div class="list_item_content_footer">
+                <button>View Details</button>
+              </div>
+            </div>
+          </div>
+          <div class="list_item">
+            <img src="/assets/property 3.jpg" alt="" />
+            <div class="list_item_content">
+              <h3>5 Bedroom Duplex</h3>
+              <p>Victoria Island, Lagos</p>
+              <p>$1,200,000</p>
+              <div class="list_item_content_footer">
+                <button>View Details</button>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="about">
+        <div class="about_content">
+          <div class="about_content_header">
+            <h1>About Ziba</h1>
+            <p>beauty of belonging</p>
+          </div>
+          <div class="about_content_body">
+            <div class="about_img">
+              
+              <img src="/assets/naomi-hebert-MP0bgaS_d1c-unsplash.jpg" alt="" />
+            </div>
+            <div class="about_content_text">
+              <h1>Curation. Community. Trust.</h1>
+              <p>
+                At Ziba, we believe that finding the right property is about
+                more than just location— <br>it’s about finding a place where you
+                belong. We’re a Lagos-based real estate company dedicated to
+                making your property journey seamless, transparent, and
+                inspiring. Whether you’re searching for your dream home, a
+                strategic investment, or a comfortable stay, we’re here to guide
+                you with expertise, integrity, and a personal touch. Discover
+                the Ziba difference, where every property tells a story and
+                every client finds their perfect match.
+              </p>
+              <div class="about_content_footer">
+              <button>Explore Properties</button>
+            </div>
+            </div>
+              </div>
+            
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="stat" id="stat-section">
+        <div class="stat_item">
+          <h1 class="counter" data-target="1000">0+</h1>
+          <p>Properties Sold</p>
+        </div>
+        <div class="stat_item">
+          <h1 class="counter" data-target="1700">0+</h1>
+          <p>Properties Leased</p>
+        </div>
+        <div class="stat_item">
+          <h1 class="counter" data-target="900">0+</h1>
+          <p>Happy Clients</p>
+        </div>
+        <div class="stat_item">
+          <h1 class="counter" data-target="5">0+</h1>
+          <p>Years of Experience</p>
+        </div>
+      </div>
+    </main>
+    <section class="ziba_process_section">
+      <div class="ziba_process">
+        <div class="ziba_process_header">
+          <h1>The Ziba Process</h1>
+          <p>A seamless journey to your perfect property</p>
+        </div>
+        <div class="ziba_process_body">
+          <div class="ziba_process_item">
+            <div class="ziba_process_item_header">
+              <div>
+                <span>1</span>
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+              <p>Discover</p>
+            </div>
+            <div class="ziba_process_item_body">
+              <p>
+                Explore our curated selection of premium properties tailored to
+                your needs.
+              </p>
+            </div>
+          </div>
+          <div class="ziba_process_item">
+            <div class="ziba_process_item_header">
+              <div>
+                <span>2</span>
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <p>Connect</p>
+            </div>
+            <div class="ziba_process_item_body">
+              <p>
+                Connect with our expert team to find the perfect property for
+                you.
+              </p>
+            </div>
+          </div>
+          <div class="ziba_process_item">
+            <div class="ziba_process_item_header">
+              <div>
+                <span>3</span>
+                <i class="fa-solid fa-house"></i>
+              </div>
+              <p>Settle</p>
+            </div>
+            <div class="ziba_process_item_body">
+              <p>
+                Settle into your dream home with our seamless property
+                management services.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="why_choose_ziba">
+      <div class="why_choose_ziba_header">
+        <h1>Why Choose Ziba</h1>
+        <p>A seamless journey to your perfect property</p>
+      </div>
+      <div class="why_choose_ziba_body">
+        <div class="why_choose_ziba_item">
+          <i class="fa-solid fa-shield"></i>
+          <h3>Total Verification</h3>
+          <p>
+            We eliminate "ghost listings." Every property undergoes a rigorous title audit for your peace of mind.
+          </p>
+        </div>
+        <div class="why_choose_ziba_item">
+          <i class="fa-solid fa-star"></i>
+          <h3>Aesthetic Curation</h3>
+          <p>We don’t just list properties; we curate spaces. Our team selects homes that combine modern comfort, functionality, and style.</p>
+        </div>
+        <div class="why_choose_ziba_item">
+          <i class="fa-solid fa-house"></i>
+          <h3>Hospitality-Grade Stays</h3>
+          <p>Experience Lagos without the stress. Our short-term stays are pre-vetted for 24/7 power, high-speed WiFi, and premium security.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="join_partner">
+      <div class="join_us">
+        <div class="partner_image">
+          <img src="/assets/real-estate-sector.jpg" alt="">
+        </div>
+        <div class="partner_content">
+          <span>FOR PARTNERS</span>
+          <h1>Join the Ziba Network</h1>
+          <p>Are you a property owner, manager, or developer looking to reach more clients? Partner with Ziba and showcase your properties to our curated community of buyers, renters, and guests.</p>
+          <button>Become a Partner</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer">
+        <div class="footer_section">
+          <div class="logo">
+            <img src="/assets/ziba_logo_transparent black.png" alt="" />
+          </div>
+          <p>
+            The Beauty of Belonging. Curating Premium Sales, Leases, and Stays
+            Across Lagos.
+          </p>
+          <div class="social_links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="footer_section">
+          <h3>Explore</h3>
+          <div class="explore_links">
+            <ul>
+              <li><a href="#">Sales</a></li>
+              <li><a href="#">Leasing</a></li>
+              <li><a href="#">Stay</a></li>
+              <li><a href="#">Apartments</a></li>
+              <li><a href="#">Partners</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer_section">
+          <h3>Partners</h3>
+          <div class="partner_links">
+            <ul>
+              <li><a href="#">Real Estate Agents</a></li>
+              <li><a href="#">Property Managers</a></li>
+              <li><a href="#">Investors</a></li>
+              <li><a href="#">Developers</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer_section">
+          <h3>Contact</h3>
+          <div class="contact_info">
+            <span>Lagos office</span>
+            <p>
+              12B Admiralty Way, Lekki Phase 1,Lagos, Nigeria.
+              <br />
+              <i class="fa-solid fa-phone"></i>+234 800 000 0000
+              <br />
+              <i class="fa-regular fa-envelope"></i>hello@zibaestates.com
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="../javascript/script.js"></script>
+  </body>
 </html>

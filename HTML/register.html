@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Ziba Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="auth-background"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <!-- Main Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo Section -->
+            <div class="auth-logo">
+             <a href="index.html"><img src="../assets/logo.jpeg" alt="Ziba Real Estate"></a>
+                <h1>ZIBA</h1>
+                <p>Premium Real Estate</p>
+            </div>
+
+            <!-- Title -->
+            <h2 class="auth-title">Create Your Account</h2>
+            <p class="auth-subtitle">Join our exclusive network of luxury properties</p>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="auth-form" novalidate>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="fullName" name="fullName" class="form-input"
+                            placeholder="Enter your full name" autocomplete="name" required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email"
+                            autocomplete="email" required>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="Create a strong password" autocomplete="new-password" required>
+                        <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <!-- Password Strength Indicator -->
+                    <div class="password-strength">
+                        <div class="password-strength-bar"></div>
+                    </div>
+                    <p class="password-strength-text"></p>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input"
+                            placeholder="Confirm your password" autocomplete="new-password" required>
+                    </div>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="form-group">
+                    <label class="form-label">I am a...</label>
+                    <div class="role-selection">
+                        <!-- User/Buyer Card -->
+                        <div class="role-card" data-role="user" tabindex="0" role="button" aria-pressed="false">
+                            <div class="role-check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <i class="fas fa-home role-icon"></i>
+                            <div class="role-title">Buyer / Renter</div>
+                            <div class="role-description">Looking for a property</div>
+                        </div>
+
+                        <!-- Agent/Seller Card -->
+                        <div class="role-card" data-role="agent" tabindex="0" role="button" aria-pressed="false">
+                            <div class="role-check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <i class="fas fa-briefcase role-icon"></i>
+                            <div class="role-title">Agent / Seller</div>
+                            <div class="role-description">Listing properties</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent Fields (Hidden by default) -->
+                <div class="agent-fields">
+                    <div class="form-group">
+                        <label for="businessName" class="form-label">Business Name</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-building input-icon"></i>
+                            <input type="text" id="businessName" name="businessName" class="form-input agent-field"
+                                placeholder="Your company or business name" autocomplete="organization">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="tel" id="phone" name="phone" class="form-input agent-field"
+                                placeholder="+1 (555) 000-0000" autocomplete="tel">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="auth-button">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p class="auth-footer-text">
+                    Already have an account?
+                    <a href="login.html" class="auth-link">Sign in</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+</body>
+
+</html>
