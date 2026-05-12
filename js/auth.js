@@ -1,4 +1,11 @@
+/**
+ * ZIBA REAL ESTATE - AUTHENTICATION SYSTEM
+ * Enhanced JavaScript with Robust Data Persistence
+ */
 
+// ============================================
+// AUTH MODULE
+// ============================================
 const Auth = (function() {
     'use strict';
 
@@ -37,15 +44,74 @@ const Auth = (function() {
     };
 
     // ============================================
-    // UTILITY FUNCTIONS
+    // STORAGE HELPERS (Robust LocalStorage)
     // ============================================
 
     /**
-     * Debounce function to limit execution rate
-     * @param {Function} func - Function to debounce
-     * @param {number} wait - Milliseconds to wait
-     * @returns {Function} Debounced function
+     * Safe LocalStorage setter with error handling
      */
+    function setStorage(key, value) {
+        try {
+            if (typeof value === 'object') {
+                localStorage.setItem(key, JSON.stringify(value));
+            } else {
+                localStorage.setItem(key, value);
+            }
+            console.log(`💾 Saved to localStorage: ${key}`);
+            return true;
+        } catch (e) {
+            console.error(`❌ Failed to save ${key}:`, e);
+            showToast('Storage error. Please enable cookies/localStorage.', 'error');
+            return false;
+        }
+    }
+
+    /**
+     * Safe LocalStorage getter with error handling
+     */
+    function getStorage(key, parseJson = false) {
+        try {
+            const item = localStorage.getItem(key);
+            if (item === null) return null;
+            return parseJson ? JSON.parse(item) : item;
+        } catch (e) {
+            console.error(`❌ Failed to read ${key}:`, e);
+            return null;
+        }
+    }
+
+    /**
+     * Safe LocalStorage remover
+     */
+    function removeStorage(key) {
+        try {
+            localStorage.removeItem(key);
+            console.log(`🗑️ Removed from localStorage: ${key}`);
+            return true;
+        } catch (e) {
+            console.error(`❌ Failed to remove ${key}:`, e);
+            return false;
+        }
+    }
+
+    /**
+     * Check if localStorage is available
+     */
+    function isStorageAvailable() {
+        try {
+            const test = '__storage_test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -60,29 +126,32 @@ const Auth = (function() {
 
     /**
      * Show toast notification
-     * @param {string} message - Message to display
-     * @param {string} type - Type: 'success', 'error', 'warning'
-     * @param {number} duration - Duration in milliseconds
      */
     function showToast(message, type = 'success', duration = 3000) {
-        // Remove existing toasts
         const existingToast = document.querySelector('.toast-notification');
         if (existingToast) {
             existingToast.remove();
         }
 
-        // Create toast element
         const toast = document.createElement('div');
         toast.className = `toast-notification toast-${type}`;
+        
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <i class="fas ${icons[type] || icons.info}"></i>
             <span>${message}</span>
         `;
 
-        // Add styles using brand colors
         const colors = {
             success: config.colors.success,
             error: config.colors.error,
+            warning: config.colors.warning,
             info: config.colors.info
         };
 
@@ -109,13 +178,11 @@ const Auth = (function() {
 
         document.body.appendChild(toast);
 
-        // Animate in
         requestAnimationFrame(() => {
             toast.style.transform = 'translateX(0)';
             toast.style.opacity = '1';
         });
 
-        // Remove after duration
         setTimeout(() => {
             toast.style.transform = 'translateX(400px)';
             toast.style.opacity = '0';
@@ -125,9 +192,6 @@ const Auth = (function() {
 
     /**
      * Set button loading state
-     * @param {HTMLElement} button - Button element
-     * @param {boolean} loading - Loading state
-     * @param {string} originalText - Original button text
      */
     function setButtonLoading(button, loading, originalText) {
         if (loading) {
@@ -147,28 +211,18 @@ const Auth = (function() {
     // VALIDATION FUNCTIONS
     // ============================================
 
-    /**
-     * Validate email format
-     * @param {string} email - Email to validate
-     * @returns {boolean} Is valid
-     */
     function isValidEmail(email) {
-        const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    /**
-     * Validate password strength
-     * @param {string} password - Password to check
-     * @returns {Object} Strength details
-     */
     function checkPasswordStrength(password) {
         let strength = 0;
         const checks = {
             length: password.length >= config.minPasswordLength,
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
-            number: /\\d/.test(password),
+            number: /\d/.test(password),
             special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
         };
 
@@ -188,22 +242,15 @@ const Auth = (function() {
         return { strength, label, className, checks };
     }
 
-    /**
-     * Show field error
-     * @param {HTMLElement} input - Input element
-     * @param {string} message - Error message
-     */
     function showFieldError(input, message) {
         input.classList.add('error');
         input.classList.remove('success');
 
-        // Remove existing error message
         const existingError = input.parentElement.parentElement.querySelector('.field-error');
         if (existingError) {
             existingError.remove();
         }
 
-        // Add error message with brand colors
         const errorDiv = document.createElement('div');
         errorDiv.className = 'field-error';
         errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i>${message}`;
@@ -211,10 +258,6 @@ const Auth = (function() {
         input.parentElement.parentElement.appendChild(errorDiv);
     }
 
-    /**
-     * Clear field error
-     * @param {HTMLElement} input - Input element
-     */
     function clearFieldError(input) {
         input.classList.remove('error');
         const errorDiv = input.parentElement.parentElement.querySelector('.field-error');
@@ -223,10 +266,6 @@ const Auth = (function() {
         }
     }
 
-    /**
-     * Show field success
-     * @param {HTMLElement} input - Input element
-     */
     function showFieldSuccess(input) {
         input.classList.remove('error');
         input.classList.add('success');
@@ -240,11 +279,6 @@ const Auth = (function() {
     // PASSWORD FUNCTIONS
     // ============================================
 
-    /**
-     * Toggle password visibility
-     * @param {HTMLElement} toggleBtn - Toggle button
-     * @param {HTMLElement} passwordInput - Password input
-     */
     function togglePasswordVisibility(toggleBtn, passwordInput) {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
@@ -255,10 +289,6 @@ const Auth = (function() {
         state.passwordVisible = type === 'text';
     }
 
-    /**
-     * Update password strength indicator
-     * @param {string} password - Password value
-     */
     function updatePasswordStrength(password) {
         const strengthBar = document.querySelector('.password-strength-bar');
         const strengthText = document.querySelector('.password-strength-text');
@@ -277,7 +307,6 @@ const Auth = (function() {
         strengthBar.className = `password-strength-bar ${className}`;
         strengthText.textContent = `Password strength: ${label}`;
         
-        // Use brand colors
         const colors = {
             weak: config.colors.error,
             medium: config.colors.warning,
@@ -290,24 +319,20 @@ const Auth = (function() {
     // ROLE SELECTION
     // ============================================
 
-    /**
-     * Handle role selection
-     * @param {string} role - Selected role: 'user' or 'agent'
-     */
     function selectRole(role) {
         state.selectedRole = role;
 
-        // Update UI
         document.querySelectorAll('.role-card').forEach(card => {
             card.classList.remove('active');
+            card.setAttribute('aria-pressed', 'false');
         });
 
         const selectedCard = document.querySelector(`[data-role="${role}"]`);
         if (selectedCard) {
             selectedCard.classList.add('active');
+            selectedCard.setAttribute('aria-pressed', 'true');
         }
 
-        // Show/hide agent fields with animation
         const agentFields = document.querySelector('.agent-fields');
         if (agentFields) {
             if (role === 'agent') {
@@ -323,27 +348,20 @@ const Auth = (function() {
             }
         }
 
-        localStorage.setItem('selectedRole', role);
+        setStorage('selectedRole', role);
+        console.log(`🎯 Role selected: ${role}`);
     }
 
     // ============================================
     // FILE UPLOAD
     // ============================================
 
-    /**
-     * Handle file upload
-     * @param {File} file - Uploaded file
-     * @param {string} type - Upload type: 'profile' or 'document'
-     * @param {HTMLElement} zone - Upload zone element
-     */
     function handleFileUpload(file, type, zone) {
-        // Validate file type
         if (type === 'profile' && !config.allowedImageTypes.includes(file.type)) {
             showToast('Please upload a valid image file (JPEG, PNG, WebP)', 'error');
             return;
         }
 
-        // Validate file size
         if (file.size > config.maxFileSize) {
             showToast('File size must be less than 5MB', 'error');
             return;
@@ -351,16 +369,13 @@ const Auth = (function() {
 
         state.files[type] = file;
 
-        // Update UI
         zone.classList.add('has-file');
         
-        // Remove existing preview
         const existingPreview = zone.querySelector('.file-preview');
         if (existingPreview) {
             existingPreview.remove();
         }
 
-        // Create file preview
         const preview = document.createElement('div');
         preview.className = 'file-preview';
         preview.innerHTML = `
@@ -376,20 +391,15 @@ const Auth = (function() {
 
         zone.appendChild(preview);
 
-        // Add remove handler
         preview.querySelector('.file-remove').addEventListener('click', (e) => {
             e.stopPropagation();
             removeFile(type, zone);
         });
 
         showToast(`${type === 'profile' ? 'Profile image' : 'Document'} uploaded successfully`, 'success');
+        console.log(`📎 File uploaded: ${file.name} (${type})`);
     }
 
-    /**
-     * Remove uploaded file
-     * @param {string} type - Upload type
-     * @param {HTMLElement} zone - Upload zone element
-     */
     function removeFile(type, zone) {
         state.files[type] = null;
         zone.classList.remove('has-file');
@@ -409,10 +419,6 @@ const Auth = (function() {
     // FORM HANDLERS
     // ============================================
 
-    /**
-     * Handle registration form submission
-     * @param {Event} e - Submit event
-     */
     async function handleRegister(e) {
         e.preventDefault();
 
@@ -482,21 +488,35 @@ const Auth = (function() {
         }
 
         setButtonLoading(submitBtn, true, originalText);
+        
+        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
 
+        // Save user data to localStorage
         const userData = {
             fullName,
             email,
             role: state.selectedRole,
             businessName: form.querySelector('#businessName')?.value || null,
-            phone: form.querySelector('#phone')?.value || null
+            phone: form.querySelector('#phone')?.value || null,
+            registeredAt: new Date().toISOString()
         };
-        localStorage.setItem('pendingUser', JSON.stringify(userData));
+        
+        const saved = setStorage('pendingUser', userData);
+        
+        if (!saved) {
+            setButtonLoading(submitBtn, false);
+            showToast('Failed to save data. Please try again.', 'error');
+            return;
+        }
 
         setButtonLoading(submitBtn, false);
 
         if (state.selectedRole === 'agent') {
-            window.location.href = 'verify-agent.html';
+            showToast('Registration complete! Please verify your account.', 'success');
+            setTimeout(() => {
+                window.location.href = 'verify-agent.html';
+            }, 1500);
         } else {
             showToast('Registration successful! Welcome to Ziba.', 'success');
             setTimeout(() => {
@@ -505,10 +525,6 @@ const Auth = (function() {
         }
     }
 
-    /**
-     * Handle login form submission
-     * @param {Event} e - Submit event
-     */
     async function handleLogin(e) {
         e.preventDefault();
 
@@ -539,12 +555,19 @@ const Auth = (function() {
         if (!isValid) return;
 
         setButtonLoading(submitBtn, true, originalText);
+        
+        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const pendingUser = JSON.parse(localStorage.getItem('pendingUser') || '{}');
-        if (pendingUser.email === email && pendingUser.role === 'agent') {
+        // Check for pending agent approval
+        const pendingUser = getStorage('pendingUser', true);
+        
+        if (pendingUser && pendingUser.email === email && pendingUser.role === 'agent') {
             setButtonLoading(submitBtn, false);
-            window.location.href = 'pending.html';
+            showToast('Account pending approval. Redirecting...', 'warning');
+            setTimeout(() => {
+                window.location.href = 'pending.html';
+            }, 1500);
             return;
         }
 
@@ -552,7 +575,9 @@ const Auth = (function() {
         showToast('Login successful! Redirecting...', 'success');
 
         if (rememberMe) {
-            localStorage.setItem('rememberedEmail', email);
+            setStorage('rememberedEmail', email);
+        } else {
+            removeStorage('rememberedEmail');
         }
 
         setTimeout(() => {
@@ -560,10 +585,6 @@ const Auth = (function() {
         }, 1000);
     }
 
-    /**
-     * Handle agent verification form submission
-     * @param {Event} e - Submit event
-     */
     async function handleAgentVerification(e) {
         e.preventDefault();
 
@@ -589,7 +610,18 @@ const Auth = (function() {
         }
 
         setButtonLoading(submitBtn, true, originalText);
+        
+        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Update user data with verification info
+        const pendingUser = getStorage('pendingUser', true);
+        if (pendingUser) {
+            pendingUser.verifiedAt = new Date().toISOString();
+            pendingUser.bio = bio;
+            pendingUser.status = 'pending_approval';
+            setStorage('pendingUser', pendingUser);
+        }
 
         setButtonLoading(submitBtn, false);
         showToast('Verification submitted successfully!', 'success');
@@ -603,10 +635,17 @@ const Auth = (function() {
     // INITIALIZATION
     // ============================================
 
-    /**
-     * Initialize all event listeners
-     */
     function init() {
+        console.log('🔐 Ziba Auth System Initializing...');
+        
+        // Check storage availability
+        if (!isStorageAvailable()) {
+            console.warn('⚠️ localStorage not available! Data will not persist.');
+            showToast('Warning: Browser storage not available', 'warning');
+        } else {
+            console.log('✅ localStorage is available');
+        }
+
         // Password toggle buttons
         document.querySelectorAll('.password-toggle').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -628,12 +667,21 @@ const Auth = (function() {
             card.addEventListener('click', function() {
                 selectRole(this.dataset.role);
             });
+            
+            // Keyboard support for accessibility
+            card.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectRole(this.dataset.role);
+                }
+            });
         });
 
         // Restore saved role
-        const savedRole = localStorage.getItem('selectedRole');
+        const savedRole = getStorage('selectedRole');
         if (savedRole) {
             selectRole(savedRole);
+            console.log(`🔄 Restored role: ${savedRole}`);
         }
 
         // File upload zones
@@ -677,31 +725,38 @@ const Auth = (function() {
         const registerForm = document.querySelector('#registerForm');
         if (registerForm) {
             registerForm.addEventListener('submit', handleRegister);
+            console.log('✅ Registration form bound');
         }
 
         const loginForm = document.querySelector('#loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', handleLogin);
             
-            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            const rememberedEmail = getStorage('rememberedEmail');
             if (rememberedEmail) {
                 const emailInput = loginForm.querySelector('#email');
                 if (emailInput) {
                     emailInput.value = rememberedEmail;
-                    loginForm.querySelector('#rememberMe')?.setAttribute('checked', 'checked');
+                    const rememberCheckbox = loginForm.querySelector('#rememberMe');
+                    if (rememberCheckbox) {
+                        rememberCheckbox.checked = true;
+                    }
                 }
             }
+            console.log('✅ Login form bound');
         }
 
         const verifyForm = document.querySelector('#verifyForm');
         if (verifyForm) {
             verifyForm.addEventListener('submit', handleAgentVerification);
             
-            const pendingUser = JSON.parse(localStorage.getItem('pendingUser') || '{}');
+            const pendingUser = getStorage('pendingUser', true);
             const businessInput = verifyForm.querySelector('#businessName');
-            if (businessInput && pendingUser.businessName) {
+            if (businessInput && pendingUser && pendingUser.businessName) {
                 businessInput.value = pendingUser.businessName;
+                console.log(`📝 Pre-filled business name: ${pendingUser.businessName}`);
             }
+            console.log('✅ Verification form bound');
         }
 
         // Input validation on blur
@@ -719,7 +774,13 @@ const Auth = (function() {
             });
         });
 
-        console.log('🔐 Ziba Auth System Initialized with Brand Colors');
+        // Log current storage state
+        const storedUser = getStorage('pendingUser', true);
+        if (storedUser) {
+            console.log('📦 Stored user:', storedUser);
+        }
+
+        console.log('🔐 Ziba Auth System Ready!');
     }
 
     // Public API
@@ -727,13 +788,15 @@ const Auth = (function() {
         init,
         showToast,
         selectRole,
-        togglePasswordVisibility
+        togglePasswordVisibility,
+        storage: {
+            set: setStorage,
+            get: getStorage,
+            remove: removeStorage,
+            isAvailable: isStorageAvailable
+        }
     };
 })();
 
 // Initialize when DOM is ready
-// document.addEventListener('DOMContentLoaded', Auth.init);
-// """
-
-// with open(os.path.join(auth_path, "auth.js"), "w") as f:
-//     f.write(auth_js_content)
+document.addEventListener('DOMContentLoaded', Auth.init);
