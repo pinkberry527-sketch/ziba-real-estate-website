@@ -1247,7 +1247,7 @@ footer{
         display: none;
     }
     .join_us {
-        flex-direction: column;
+        flex-wrap: wrap;
     }
     .partner_image {
         width: 100%;
@@ -1288,6 +1288,15 @@ footer{
         width: 100%;
         height: 100vh;
      }
+    footer{
+        flex-direction: column;
+    }
+     .footer_section {
+        width: 100%;
+    }
+    footer p{
+        font-size: var(--text-size-sm);
+    }
 }
 
 

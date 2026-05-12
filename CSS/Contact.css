@@ -610,6 +610,25 @@ footer{
         font-size: var(--text-size-md);
     }
 }
+@media (max-width: 1024px) {
+    .contact_hero_text h1{
+        font-size: var(--text-size-xl);
+    }
+
+     header{
+        height: 90%;
+        min-height: 90vh;
+    }
+
+    .nav_links ul {
+        gap: 15px;
+    }
+    .nav_links ul li a {
+        font-size: var(--text-size-md);
+    }
+    
+    
+}
 
 
 
@@ -774,10 +793,10 @@ footer{
     }
 
     .footer{
-        flex-direction: column;
+        flex-wrap: wrap;
     }
     .footer_section {
-        width: 100%;
+        width: 45%;
     }
     footer p{
         font-size: var(--text-size-sm);
