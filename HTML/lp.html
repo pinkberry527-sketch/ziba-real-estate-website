@@ -19,17 +19,38 @@
             <div class="logo">
                 <img src="../assets/logo.jpeg" alt="logo">
             </div>
-            <div class="nav_links">
-                <ul>
-                    <li><a href="#">Sales</a></li>
-                    <li><a href="#">Leasing</a></li>
-                    <li><a href="#">Stay</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Partners</a></li>
-                </ul>
-            </div>
-            <div class="nav_btn">
-                <button><a href="#">Login</a></button>
+            <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="nav-menu">
+                <div class="nav_links">
+                    <ul>
+                        <li><a href="#">Sales</a></li>
+                        <li><a href="#">Leasing</a></li>
+                        <li><a href="#">Stay</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="nav_actions">
+                    <div class="nav_btn">
+                        <button><a href="#">Login</a></button>
+                    </div>
+                    <div class="nav_extra">
+                        <button class="wishlist-summary-btn" type="button" aria-label="Wishlist" aria-expanded="false">
+                            <i class="fa fa-heart"></i>
+                            <span id="wishlistCount">0</span>
+                        </button>
+                        <div class="wishlist-dropdown" id="wishlistDropdown" aria-hidden="true">
+                            <div class="wishlist-dropdown-header">
+                                <span>Saved Properties</span>
+                                <button class="wishlist-clear" type="button">Clear all</button>
+                            </div>
+                            <div class="wishlist-items" id="wishlistItems"></div>
+                            <div class="wishlist-empty">No saved properties yet.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
       </div>
@@ -71,187 +92,9 @@
                         </div>
                     
 
-                    <!-- PROPERITY LIST -->
-                            
-                    <section class="property-list">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="/ziba-real-estate-website/assets/property 1.jpg" alt="house">
-
-                                <div class="price">#750,000,000</div>
-                                <div class="badge">NEW</div>
-                            </div>
-
-
-                            <div class="card-content">
-                                <h3>Luxury 5-Bedroom Duplex</h3>
-                                <p class="location"> V.I, Lagos</p>
-
-                                <div class="features">
-                                    <span>5 Bed</span>
-                                    <span>6 Bath</span>
-                                    <span> 1075 sqm</span>
-                                </div>
-
-                                <button>View Property</button>
-                            </div>
-                        </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 2.jpg" alt="house">
-
-                                    <div class="price">#900,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 4-Bedroom Duplex</h3>
-                                    <p class="location"> V.I, Lagos</p>
-
-                                    <div class="features">
-                                        <span>4 Bed</span>
-                                        <span>5 Bath</span>
-                                        <span> 1425 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 6.jpg" alt="house">
-
-                                    <div class="price">#350,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 5-Bedroom Terrace Duplex</h3>
-                                    <p class="location"> Lekki, Lagos</p>
-
-                                    <div class="features">
-                                        <span>5 Bed</span>
-                                        <span>5 Bath</span>
-                                        <span> 175 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 4.jpg" alt="house">
-
-                                    <div class="price">#150,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 4-Bedroom Terrace Duplex</h3>
-                                    <p class="location"> Lekki, Lagos</p>
-
-                                    <div class="features">
-                                        <span>4 Bed</span>
-                                        <span>5 Bath</span>
-                                        <span> 125 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 5.jpg" alt="house">
-
-                                    <div class="price">#180,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 4-Bedroom Duplex</h3>
-                                    <p class="location"> Lekki, Lagos</p>
-
-                                    <div class="features">
-                                        <span>4 Bed</span>
-                                        <span>4 Bath</span>
-                                        <span> 175 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 6.jpg" alt="house">
-
-                                    <div class="price">#150,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 4-Bedroom Duplex</h3>
-                                    <p class="location"> Lekki, Lagos</p>
-
-                                    <div class="features">
-                                        <span>4 Bed</span>
-                                        <span>4 Bath</span>
-                                        <span> 175 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 2.jpg" alt="house">
-
-                                    <div class="price">#350,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 4-Bedroom Duplex</h3>
-                                    <p class="location"> V.I, Lagos</p>
-
-                                    <div class="features">
-                                        <span>4 Bed</span>
-                                        <span>4 Bath</span>
-                                        <span> 175 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="/ziba-real-estate-website/assets/property 1.jpg" alt="house">
-
-                                    <div class="price">#250,000,000</div>
-                                    <div class="badge">NEW</div>
-                                </div>
-
-                                <div class="card-content">
-                                    <h3>Luxury 5-Bedroom Duplex</h3>
-                                    <p class="location"> Lekki, Lagos</p>
-
-                                    <div class="features">
-                                        <span>5 Bed</span>
-                                        <span>6 Bath</span>
-                                        <span> 1275 sqm</span>
-                                    </div>
-
-                                    <button>View Property</button>
-                                </div>
-                            </div>
-
-                    </section>
+                    <!-- PROPERTY LIST -->
+                    <section class="property-list" id="propertyList"></section>
+                    <div class="no-results" id="noResults" style="display:none; text-align:center; padding: 3rem 0; color: #555; font-size: 1rem;">No properties match your search filters.</div>
 
                     <div class="pagination-main">
                         <ul class="pagination">
@@ -307,8 +150,8 @@
                                         <label for="types">Type</label>
                                         <select required name=""  id="types">
                                             <option value="" disabled selected hidden>All Types</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="Duplex">Duplex</option>
+                                            <option value="Terrace Duplex">Terrace Duplex</option>
                                         </select>
                                     </div>
 
@@ -316,8 +159,8 @@
                                         <label for="bedroom">Bedroom</label>
                                         <select required name="" id="bedroom">
                                             <option value="" disabled selected>Any</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="4">4 Bedrooms</option>
+                                            <option value="5">5 Bedrooms</option>
                                         </select>
                                     </div>
                                 </div>
@@ -327,17 +170,21 @@
                                         <label for="min-price">Min Price</label>
                                         <select name="" id="min-price">
                                             <option value="">No Min</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="150000000">#150,000,000</option>
+                                            <option value="250000000">#250,000,000</option>
+                                            <option value="350000000">#350,000,000</option>
+                                            <option value="750000000">#750,000,000</option>
                                         </select>
                                     </div>
 
                                     <div class="select-group">
                                         <label for="max-price">Max Price</label>
                                         <select name="" id="max-price">
-                                            <option value="">No Min</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="">No Max</option>
+                                            <option value="250000000">#250,000,000</option>
+                                            <option value="350000000">#350,000,000</option>
+                                            <option value="750000000">#750,000,000</option>
+                                            <option value="900000000">#900,000,000</option>
                                         </select>
                                     </div>
                                 </div>
@@ -347,8 +194,8 @@
                                         <label for="furnished">Furnished</label>
                                         <select name="" id="furnished">
                                             <option value="">Any</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
                                         </select>
                                     </div>
 
@@ -356,8 +203,8 @@
                                          <label for="serviced">Serviced</label>
                                         <select name="" id="serviced">
                                             <option value="">Any</option>
-                                            <option value="">Type 1</option>
-                                            <option value="">Type 2</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
                                         </select>
                                     </div>
                                 </div>
@@ -410,9 +257,9 @@
     <section class="cta-section">    
         <div class="call-banner">
             <div class="slider">
-                <div class="slide active" style="background-image: url('/ziba-real-estate-website/assets/property\ 4.jpg');"></div>
-                <div class="slide" style="background-image: url('/ziba-real-estate-website/assets/property\ 2.jpg');"></div>
-                <div class="slide" style="background-image: url('/ziba-real-estate-website/assets/property\ 5.jpg');"></div>
+                <div class="slide active" style="background-image: url('../assets/property 4.jpg');"></div>
+                <div class="slide" style="background-image: url('../assets/property 2.jpg');"></div>
+                <div class="slide" style="background-image: url('../assets/property 5.jpg');"></div>
             </div>
 
             <div class="cta-banner">
@@ -438,7 +285,7 @@
             <ul class="attract-slider">
                 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -447,7 +294,7 @@
                 </li>
 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -456,7 +303,7 @@
                 </li>
 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -465,7 +312,7 @@
                 </li>
 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -474,7 +321,7 @@
                 </li>
 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -483,7 +330,7 @@
                 </li>
 
                 <li>
-                    <img src="/ziba-real-estate-website/assets/partner avatar 1.jpg" alt="partner">
+                    <img src="../assets/partner avatar 1.jpg" alt="partner">
                     
                     <div class="user-info">
                         <span class="name">Charles Udu</span>
@@ -506,7 +353,7 @@
             <h4 class="">Showing 16 verified guest comments</h4>
             <div class="comment-box">
                 <div class="comment-image">
-                    <img src="/ziba-real-estate-website/assets/069d7d0126478b-luxurious-2bedroom-apartment-within-a-serene-neighborhood-for-rent-ikate-lekki-lagos.jpg" alt="image">
+                    <img src="../assets/069d7d0126478b-luxurious-2bedroom-apartment-within-a-serene-neighborhood-for-rent-ikate-lekki-lagos.jpg" alt="image">
                 </div>
                 <div class="comment-content">
                     <h4>Soldman Kell</h4>
@@ -533,7 +380,7 @@
             </div>
             <div class="comment-box">
                 <div class="comment-image">
-                    <img src="/img/daniel-koponyas-gxC8OUPUeUU-unsplash.jpg" alt="image">
+                    <img src="../assets/property 3.avif" alt="image">
                 </div>
                 <div class="comment-content">
                     <h4 class="">Burson Lesson</h4>
@@ -616,7 +463,7 @@
       <div class="footer">
             <div class="footer_section">
                 <div class="logo">
-                    <img src="/ziba-real-estate-website/assets/logo.jpeg" alt="logo" />
+                    <img src="../assets/logo.jpeg" alt="logo" />
                 </div>
                 <p>
                     The Beauty of Belonging. Curating Premium Sales, Leases, and Stays
@@ -671,7 +518,7 @@
         </div>
     </footer>
 
-    <script src="/ziba.py"></script>
- 
+    <script src="script.js"></script>
+
 </body>
 </html>
