@@ -145,6 +145,7 @@ function getWishlist() {
   }
 }
 
+
 function setWishlist(items) {
   localStorage.setItem('zibaWishlist', JSON.stringify(items));
 }
