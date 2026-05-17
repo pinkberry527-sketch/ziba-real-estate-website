@@ -11,7 +11,7 @@ const properties = [
     size: 1075,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 1.jpg',
+    image: '../asset/img1.jpg',
     badge: 'NEW',
     description: 'A premium duplex with private terraces, large living spaces, and elegant finishes. Ideal for family living or investment in Lagos.',
     longDescription: 'This stunning duplex offers expansive rooms, ample natural light, and polished interiors. Close to major amenities and designed for modern lifestyle comfort without sacrificing luxury.'
@@ -28,7 +28,7 @@ const properties = [
     size: 1425,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 2.jpg',
+    image: '../asset/img2.jpg',
     badge: 'NEW',
     description: 'A grand 4-bedroom duplex situated in a prime Lagos neighborhood, with generous amenities and luxurious finishes.',
     longDescription: 'Beautiful design meets comfort in this high-end duplex property. Spacious bedrooms, premium fixtures, and a location that delivers convenience and prestige.'
@@ -45,7 +45,7 @@ const properties = [
     size: 175,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 6.jpg',
+    image: '../asset/img3.avif',
     badge: 'NEW',
     description: 'A modern terrace duplex in Lekki designed for comfort and quality living. Excellent for families and long-term ownership.',
     longDescription: 'Smart layout, beautiful exterior lines, and thoughtful finishes define this terrace duplex. It is a strong value for buyers who want style and functionality.'
@@ -62,7 +62,7 @@ const properties = [
     size: 125,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 4.jpg',
+    image: '../asset/img4.jpg',
     badge: 'NEW',
     description: 'An affordable terrace duplex with high-end exterior finishes and a welcoming, open living layout.',
     longDescription: 'This property balances quality and value. It offers the kind of design and comfort expected from a modern Lekki residence while remaining grounded in efficiency and practicality.'
@@ -79,7 +79,7 @@ const properties = [
     size: 175,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 5.jpg',
+    image: '../asset/img5.jpg',
     badge: 'NEW',
     description: 'A premium 4-bedroom duplex with smart living space and a premium Lagos address.',
     longDescription: 'Clean lines, quality finishes, and a functional design make this property excellent for both families and investors. The layout is bright and easy to maintain.'
@@ -96,7 +96,7 @@ const properties = [
     size: 175,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 6.jpg',
+    image: '../asset/img6.jpeg',
     badge: 'NEW',
     description: 'High-quality duplex offering comfortable living areas and a strong location near Lekki amenities.',
     longDescription: 'A warm and practical property with modern finishes. It suits buyers seeking a solid investment with an attractive, well-balanced floor plan.'
@@ -113,7 +113,7 @@ const properties = [
     size: 175,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 2.jpg',
+    image: '../asset/img1.jpg',
     badge: 'NEW',
     description: 'A refined duplex located in Victoria Island with balanced living and entertainment areas.',
     longDescription: 'This property features a polished layout and premium finishes suitable for a discerning buyer. It presents an attractive residence with strong location value.'
@@ -130,7 +130,7 @@ const properties = [
     size: 1275,
     furnished: 'No',
     serviced: 'No',
-    image: '../assets/property 1.jpg',
+    image: '../asset/img2.jpg',
     badge: 'NEW',
     description: 'A spacious 5-bedroom duplex with generous room sizes and a commanding Lekki address.',
     longDescription: 'The strong design, bright interiors, and comfortable layout make this property ideal for larger families or buyers seeking long term value in Lagos.'
