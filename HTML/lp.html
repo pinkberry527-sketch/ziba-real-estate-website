@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -38,7 +39,7 @@
         </div>
         <i class="fa-solid fa-bars" id="mobile_nav_btn"></i>
         <div class="nav_btn">
-          <button><a href="#">Login</a></button>
+          <button><a href="/HTML/login.html">Login</a></button>
         </div>
         
         <div class="mobile_nav">
@@ -80,11 +81,11 @@
               <a href="#">Explore Properties</a>
             </button>
             <button class="secondary_btn">
-              <a href="#">List Your Property</a>
+              <a href="/HTML/dash.html">List Your Property</a>
             </button>
           </div>
         </div>
-        <div class="hero_img">
+        <div data-aos="fade-left" class="hero_img">
           <img
             src="/assets/view-3d-house-model.png"
             alt=""
@@ -137,7 +138,7 @@
             </div>
           </div>
         </div>
-        <div class="featured_list" id="featured_list">
+        <div data-aos="fade-up" class="featured_list" id="featured_list">
           <!-- <div class="list_item">
             <img src="/assets/property 1.jpg" alt="" />
             <div class="list_item_content">
@@ -199,7 +200,7 @@
                 every client finds their perfect match.
               </p>
               <div class="about_content_footer">
-              <button>Explore Properties</button>
+              <button><a href="/HTML/dash.html">Explore Properties</a></button>
             </div>
             </div>
               </div>
@@ -319,7 +320,7 @@
           <span>FOR PARTNERS</span>
           <h1>Join the Ziba Network</h1>
           <p>Are you a property owner, manager, or developer looking to reach more clients? Partner with Ziba and showcase your properties to our curated community of buyers, renters, and guests.</p>
-          <button>Become a Partner</button>
+          <button> <a href="/HTML/register.html">Become a Partner</a></button>
         </div>
       </div>
     </section>
@@ -380,6 +381,14 @@
         </div>
       </div>
     </footer>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+  AOS.init({
+    duration: 1000 ,
+    once: false,
+    mirror: true
+  });
+</script>
     <script src="../javascript/script.js"></script>
   </body>
 </html>

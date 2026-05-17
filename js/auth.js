@@ -728,23 +728,42 @@ const Auth = (function() {
             console.log('✅ Registration form bound');
         }
 
-        const loginForm = document.querySelector('#loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', handleLogin);
-            
-            const rememberedEmail = getStorage('rememberedEmail');
-            if (rememberedEmail) {
-                const emailInput = loginForm.querySelector('#email');
-                if (emailInput) {
-                    emailInput.value = rememberedEmail;
-                    const rememberCheckbox = loginForm.querySelector('#rememberMe');
-                    if (rememberCheckbox) {
-                        rememberCheckbox.checked = true;
-                    }
-                }
+       const loginForm = document.querySelector('#loginForm');
+
+if (loginForm) {
+    loginForm.addEventListener('submit', handleLogin);
+
+    const rememberedEmail = getStorage('rememberedEmail');
+    if (rememberedEmail) {
+        const emailInput = loginForm.querySelector('#email');
+        if (emailInput) {
+            emailInput.value = rememberedEmail;
+            const rememberCheckbox = loginForm.querySelector('#rememberMe');
+            if (rememberCheckbox) {
+                rememberCheckbox.checked = true;
             }
-            console.log('✅ Login form bound');
         }
+    }
+    console.log('✅ Login form bound');
+}
+
+function handleLogin(event) {
+    event.preventDefault(); // stop the form from refreshing
+
+    const emailInput = loginForm.querySelector('#email');
+    const passwordInput = loginForm.querySelector('#password');
+
+    // Basic check (optional)
+    if (emailInput.value && passwordInput.value) {
+        // Redirect to profile page
+        window.location.href = '/HTML/dashuser.html'; 
+        // Or if you want to pass the email to the profile page:
+        // window.location.href = `profile.html?user=${encodeURIComponent(emailInput.value)}`;
+    } else {
+        showToast('Please enter both email and password.', 'error');
+    }
+}
+
 
         const verifyForm = document.querySelector('#verifyForm');
         if (verifyForm) {

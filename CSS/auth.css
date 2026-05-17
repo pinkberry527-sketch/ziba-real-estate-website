@@ -354,8 +354,8 @@ body {
 }
 
 .auth-logo img {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
     object-fit: contain;
     margin-bottom: var(--spacing-md);
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
