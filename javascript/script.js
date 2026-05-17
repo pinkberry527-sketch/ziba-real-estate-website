@@ -444,3 +444,15 @@ if (searchBtn) {
     }
   });
 }
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    const navBar = document.querySelector('.nav_bar');
+    if (navBar) {
+        if (window.scrollY >= 10) {
+            navBar.classList.add('scrolled');
+        } else {
+            navBar.classList.remove('scrolled');
+        }
+    }
+});

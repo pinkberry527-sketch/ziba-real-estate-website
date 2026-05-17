@@ -30,9 +30,9 @@
         </div>
         <div class="nav_links">
           <ul>
-            <li><a href="#">Sales</a></li>
-            <li><a href="#">Leasing</a></li>
-            <li><a href="#">Stay</a></li>
+            <li><a href="property.html?category=sales">Sales</a></li>
+            <li><a href="property.html?category=lease">Leasing</a></li>
+            <li><a href="property.html?category=stay">Stay</a></li>
             <li><a href="../HTML/Contact.html">Contact</a></li>
             <li><a href="/HTML/partnal.html">Partners</a></li>
           </ul>
@@ -51,9 +51,9 @@
           </div>
           <div class="mobile_nav_body">
             <ul>
-              <li><a href="#">Sales</a></li>
-              <li><a href="#">Leasing</a></li>
-              <li><a href="#">Stay</a></li>
+              <li><a href="property.html?category=sales">Sales</a></li>
+              <li><a href="property.html?category=lease">Leasing</a></li>
+              <li><a href="property.html?category=stay">Stay</a></li>
               <li><a href="../HTML/Contact.html">Contact</a></li>
             <li><a href="/HTML/partnal.html">Partners</a></li>
           </ul>
@@ -78,10 +78,10 @@
           </p>
           <div class="hero_btn">
             <button class="primary_btn">
-              <a href="#">Explore Properties</a>
+              <a href="property.html">Explore Properties</a>
             </button>
             <button class="secondary_btn">
-              <a href="/HTML/dash.html">List Your Property</a>
+              <a href="../HTML/dash.html">List Your Property</a>
             </button>
           </div>
         </div>
@@ -94,22 +94,23 @@
       </div>
     </header>
     <main>
-      <div class="search_box">
-        <input type="text" placeholder="Lagos" />
-        <select name="" id="">
+      <form class="search_box" action="property.html" method="GET">
+        <input type="text" name="location" placeholder="Lagos" />
+        <select name="type" id="">
           <option value="">all types</option>
-          <option value="">Apartment</option>
-          <option value="">House</option>
-          <option value="">Land</option>
-          <option value="">Comercial Property</option>
+          <option value="Apartment">Apartment</option>
+          <option value="House">House</option>
+          <option value="Land">Land</option>
+          <option value="Commercial Property">Comercial Property</option>
         </select>
-        <select name="" id="">
-          <option value="">Sales</option>
-          <option value="">Leasing</option>
-          <option value="">Stay</option>
+        <select name="category" id="">
+          <option value="">all categories</option>
+          <option value="Sales">Sales</option>
+          <option value="Leasing">Leasing</option>
+          <option value="Stay">Stay</option>
         </select>
-        <button><a href="#">Search</a></button>
-      </div>
+        <button type="submit">Search</button>
+      </form>
 
       <div class="featured_property" id="featured_property">
         <div class="featured_property_header">
@@ -138,7 +139,7 @@
             </div>
           </div>
         </div>
-        <div data-aos="fade-up" class="featured_list" id="featured_list">
+        <div class="featured_list" id="featured_list">
           <!-- <div class="list_item">
             <img src="/assets/property 1.jpg" alt="" />
             <div class="list_item_content">

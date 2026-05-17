@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/CSS/property.css">
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kumbh+Sans:wght,YOPQ@100..900,300&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+Caucasian+Albanian&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <title>Ziba</title>
+</head>
+<body>
+    <header>
+      <div class="container">
+          <nav class="nav_bar">
+            <div class="logo">
+                <a href="/HTML/Lp.html">
+                    <img src="/assets/logo.jpeg" alt="logo">
+                </a>
+            </div>
+            <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="nav-menu">
+                <div class="nav_links">
+                    <ul>
+                        <li><a href="property.html?category=sales">Sales</a></li>
+            <li><a href="property.html?category=lease">Leasing</a></li>
+            <li><a href="property.html?category=stay">Stay</a></li>
+                        <li><a href="../HTML/Contact.html">Contact</a></li>
+                        <li><a href="/HTML/partnal.html">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="nav_actions">
+                    <div class="nav_btn">
+                        <button><a href="../HTML/Login.html">Login</a></button>
+                    </div>
+                    <div class="nav_extra">
+                        <button class="wishlist-summary-btn" type="button" aria-label="Wishlist" aria-expanded="false">
+                            <i class="fa fa-heart"></i>
+                            <span id="wishlistCount">0</span>
+                        </button>
+                        <div class="wishlist-dropdown" id="wishlistDropdown" aria-hidden="true">
+                            <div class="wishlist-dropdown-header">
+                                <span>Saved Properties</span>
+                                <button class="wishlist-clear" type="button">Clear all</button>
+                            </div>
+                            <div class="wishlist-items" id="wishlistItems"></div>
+                            <div class="wishlist-empty">No saved properties yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+      </div>
+    </header>
+
+    
+   
+
+    <!--  all propery listing section-->
+    <section class="properties-main">
+        <div class="container">
+            <div class="grid-wrapper">
+                <div class="first-column">
+                    <div class="sales-header-wrapper">
+                            <div class="sale-header-content">
+                                <h1>Property For Sale In Lekki</h1>
+                                <p>
+                                    There are 5,000 available flats, houses, land and commercial property for sale in Lekki, Lagos Nigeria. The property have been listed by estate agents who can be contacted using the contact information provided for each property listing. The list can be filtered by price, furnishing and recency.
+                                </p>
+                            </div>
+                            <div class="pagination">
+                                <p>
+                                    Result 1-10 of 5,000
+                                </p>
+                                <select name="" id="">
+                                    <option value="">Default</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+
+                    <!-- PROPERTY LIST -->
+                    <section class="property-list" id="propertyList"></section>
+                    <div class="no-results" id="noResults" style="display:none; text-align:center; padding: 3rem 0; color: #555; font-size: 1rem;">No properties match your search filters.</div>
+
+                    <div class="pagination-main">
+                        <ul class="pagination">
+                            <li><a href="#"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+                                <li><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li><a href="#">6</a></li>
+                                <li><a href="#">7</a></li>
+                                <li><a href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                        </ul>
+                    </div>
+
+                        
+
+                </div>
+
+                
+
+                <div class="second-column">
+                        <div class="sales-header-wrapper">
+                            <div class="sale-header-content">
+                                <h1>Property For Sale In Lekki</h1>
+                                <p>
+                                    There are 5,000 available flats, houses, land and commercial property for sale in Lekki, Lagos Nigeria. The property have been listed by estate agents who can be contacted using the contact information provided for each property listing. The list can be filtered by price, furnishing and recency.
+                                </p>
+                            </div>
+                            <div class="pagination">
+                                <p>
+                                    Result 1-10 of 5,000
+                                </p>
+                                <select name="" id="">
+                                    <option value="">Default</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-options-wrapper">
+                            <h3>
+                                <i class="fa-solid fa-filter"></i>
+                                More Filter Options
+                            </h3>
+                            <form class="search-form">
+                                <label for="location">Location</label>
+                                <input type="text" placeholder="Lekki" id="location">
+                                
+                                <label for="category">Category</label>
+                                <input type="text" placeholder="For Sale" id="category">
+
+                                <div class="form-row">
+                                    <div class="select-group">
+                                        <label for="types">Type</label>
+                                        <select required name=""  id="types">
+                                            <option value="" disabled selected hidden>All Types</option>
+                                            <option value="house">house</option>
+                                            <option value="apartment">apartment</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="select-group">
+                                        <label for="bedroom">Bedroom</label>
+                                        <select required name="" id="bedroom">
+                                            <option value="" disabled selected>Any</option>
+                                            <option value="4">4 Bedrooms</option>
+                                            <option value="5">5 Bedrooms</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="select-group">
+                                        <label for="min-price">Min Price</label>
+                                        <select name="" id="min-price">
+                                            <option value="">No Min</option>
+                                            <option value="150000000">#150,000,000</option>
+                                            <option value="250000000">#250,000,000</option>
+                                            <option value="350000000">#350,000,000</option>
+                                            <option value="750000000">#750,000,000</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="select-group">
+                                        <label for="max-price">Max Price</label>
+                                        <select name="" id="max-price">
+                                            <option value="">No Max</option>
+                                            <option value="250000000">#250,000,000</option>
+                                            <option value="350000000">#350,000,000</option>
+                                            <option value="750000000">#750,000,000</option>
+                                            <option value="900000000">#900,000,000</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="select-group">
+                                        <label for="furnished">Furnished</label>
+                                        <select name="" id="furnished">
+                                            <option value="">Any</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="select-group">
+                                         <label for="serviced">Serviced</label>
+                                        <select name="" id="serviced">
+                                            <option value="">Any</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="social-media-wrapper">
+                            <h3>
+                                Share This Property Listing
+                            </h3>
+                            <div class="social-icons">
+                                <i class="fa-brands fa-facebook"></i>
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <i class="fa-brands fa-square-instagram"></i>
+                            </div>
+                        </div>
+                        <div class="discover-more-wrapper">
+                            <h3> Discover More</h3>
+                            <ul>
+                                <li>
+                                    <a href="">
+                                        Vacation & And Short Let
+                                        <i class="fa-regular fa-greater-than"></i>
+                                    </a>
+                                    
+                                </li>
+                                <li>
+                                    <a href="">
+                                        Beach House & Resort
+                                        <i class="fa-regular fa-greater-than"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        Apartment & And Hotels
+                                        <i class="fa-regular fa-greater-than"></i>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER section-->
+    <section class="cta-section">    
+        <div class="call-banner">
+            <div class="slider">
+                <div class="slide active" style="background-image: url('../assets/property 1.jpg');"></div>
+                <div class="slide" style="background-image: url('../assets/property 2.jpg');"></div>
+                <div class="slide" style="background-image: url('../assets/property 3.jpg');"></div>
+            </div>
+
+            <div class="cta-banner">
+                <div class="call-banner-inner">
+                    <div class="trend-content">
+                        <h5>Want to Sell or Rent?</h5>
+                        <h2>
+                            Looking to Buy a New Property or Sell an Existing One?
+                        </h2>
+
+                        <div class="section-btns">
+                            <a href="#" class="section-btn">Rent Properties</a>
+                            <a href="#" class="section-btn">Buy Properties</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARTNERS -->
+        <div class="partner-wrapper">
+            <p>PARTNERS</p>
+            <ul class="attract-slider">
+                
+                <li>
+                    <img src="../assets/agent1.jpg" alt="partner">
+                    <div class="user-info">
+                        <span class="name">John</span>
+                        <i class="fas fa-check-circle verified" title="Verified"></i>
+                    </div>
+                </li>
+
+                <li>
+                    <img src="../assets/agent2.jpg" alt="partner">
+                    <div class="user-info">
+                        <span class="name">Tayo</span>
+                        <i class="fas fa-check-circle verified" title="Verified"></i>
+                    </div>
+                </li>
+
+                <li>
+                    <img src="../assets/agent4.jpg" alt="partner">
+                    <div class="user-info">
+                        <span class="name">Deji</span>
+                        <i class="fas fa-check-circle verified" title="Verified"></i>
+                    </div>
+                </li>
+
+                <li>
+                    <img src="../assets/agent3.jpg" alt="partner">
+                    <div class="user-info">
+                        <span class="name">Folake</span>
+                        <i class="fas fa-check-circle verified" title="Verified"></i>
+                    </div>
+                </li>
+
+                <li>
+                    <img src="../assets/agent2.jpg" alt="partner">
+                    <div class="user-info">
+                        <span class="name">Adekunle</span>
+                        <i class="fas fa-check-circle verified" title="Verified"></i>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+
+    </section>
+
+     <!-- review section -->
+
+    <section class="review">
+        <div class="single-comments">
+            <h4 class="">Showing 16 verified guest comments</h4>
+            <div class="comment-box">
+                <div class="comment-image">
+                    <img src="../assets/069d7d0126478b-luxurious-2bedroom-apartment-within-a-serene-neighborhood-for-rent-ikate-lekki-lagos.jpg" alt="image">
+                </div>
+                <div class="comment-content">
+                    <h4>Soldman Kell</h4>
+                    <p class="comment-date">April 25, 2026 at 10:46 am</p>
+                    <div class="comment-rate">
+                        <div class="rating">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                        </div>
+                        <span class="comment-title">"The best services ever"</span>
+                    </div>    
+                    
+                    <p class="comment">Take in the iconic skyline and visit the neighbourhood hangouts that you've only ever seen on TV. Take in the iconic skyline and visit the neighbourhood.</p>
+                    <div class="comment-like">
+                        <div class="like-title float-left">
+                            <a href="#" class="nir-btn">Reply</a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="comment-box">
+                <div class="comment-image">
+                    <img src="../asset/img3.avif" alt="image">
+                </div>
+                <div class="comment-content">
+                    <h4 class="">Burson Lesson</h4>
+                    <p class="comment-date">April 25, 2026 at 10:46 am</p>
+                    <div class="comment-rate">
+                        <div class="rating">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                        </div>
+                        <span class="comment-title">"unforgetful experiences since i bought my house from ziba "thank you."</span>
+                    </div> 
+                    
+                    <p class="comment">Take in the iconic skyline and visit the neighbourhood hangouts that you've only ever seen on TV. Take in the iconic skyline and visit the neighbourhood.</p>
+                    <div class="comment-like">
+                        <div class="like-title float-left">
+                            <a href="#" class="nir-btn">Reply</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="single-add-review">
+            <h4 class="">Write a Review</h4>
+            <form>
+                <div class="row">
+                    <div class="">
+                        <div class="form-group">
+                            <input type="text" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="form-group mb-2">
+                            <input type="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="form-group">
+                            <textarea name="comment" placeholder="Write your review..."></textarea>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="form-btn">
+                            <button type="submit" class="review-btn">Submit Review</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    
+    
+
+     <!-- content section -->
+    <section class="content">
+        <div class="content-line">
+            <div class="content-wrap">
+                <h2 class="content-text">
+                    Looking for a dream home?
+                </h2>
+                <p class="content-p">
+                    We can help you realize your dream of a new home
+                </p>
+            </div>
+
+            <div class="content-findwrap">
+                <div class="content-find">
+                    <a href="#">Find More Properties</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!--footer section  -->
+    <footer>
+      <div class="footer">
+            <div class="footer_section">
+                <div class="logo">
+                    <img src="../assets/logo.jpeg" alt="logo" />
+                </div>
+                <p>
+                    The Beauty of Belonging. Curating Premium Sales, Leases, and Stays
+                    Across Lagos.
+                </p>
+                <div class="social_links">
+                    
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                
+                </div>
+                </div>
+
+                <div class="footer_section">
+                <h3>Explore</h3>
+                <div class="explore_links">
+                <ul>
+                    <li><a href="property.html?category=Sales">Sales</a></li>
+                    <li><a href="property.html?category=Leasing">Leasing</a></li>
+                    <li><a href="property.html?category=Stay">Stay</a></li>
+                    <li><a href="#">Apartments</a></li>
+                    <li><a href="#">Partners</a></li>
+                </ul>
+                </div>
+                </div>
+                <div class="footer_section">
+                <h3>Partners</h3>
+                <div class="partner_links">
+                    <ul>
+                    <li><a href="#">Real Estate Agents</a></li>
+                    <li><a href="#">Property Managers</a></li>
+                    <li><a href="#">Investors</a></li>
+                    <li><a href="#">Developers</a></li>
+                    </ul>
+                </div>
+                </div>
+                <div class="footer_section">
+                <h3>Contact</h3>
+                <div class="contact_info">
+                    <span>Lagos office</span>
+                    <p>
+                    12B Admiralty Way, Lekki Phase 1,Lagos, Nigeria.
+                    <br />
+                    <i class="fa-solid fa-phone"></i>+234 800 000 0000
+                    <br />
+                    <i class="fa-regular fa-envelope"></i>hello@zibaestates.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/JS/property.js"></script>
+
+</body>
+</html>

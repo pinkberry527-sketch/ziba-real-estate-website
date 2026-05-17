@@ -57,7 +57,8 @@ function init() {
 }
 
 function updateBadge() {
-    $('#agentListingBadge').textContent = state.properties.length;
+    const badge = $('#agentListingBadge');
+    if (badge) badge.textContent = state.properties.length;
 }
 
 function navigateTo(page) {

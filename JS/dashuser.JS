@@ -4,9 +4,20 @@
 
 const state = {
     currentPage: 'dashboard',
-    properties: [
-        
-    ],
+    properties: (typeof properties !== 'undefined' ? properties : []).map(p => ({
+        id: p.id,
+        title: p.title,
+        location: p.location,
+        price: p.price,
+        type: p.type,
+        listingType: p.category.toLowerCase() === 'sales' ? 'Sale' : (p.category.toLowerCase() === 'lease' ? 'Rent' : 'Sale'),
+        status: 'Active',
+        views: Math.floor(Math.random() * 500) + 50,
+        inquiries: Math.floor(Math.random() * 20),
+        createdAt: 'Oct 10, 2026',
+        description: p.description,
+        image: p.image
+    })),
     savedProperties: [],
     recentViews: []
 };
@@ -252,9 +263,9 @@ function renderPropertyCards(properties) {
         const isSaved = state.savedProperties.includes(p.id);
         return `
             <div class="property-card animate-fade-in" data-id="${p.id}">
-                <div class="property-card__image">
-                    <div class="property-card__image-pattern"></div>
-                    <div class="property-card__image-icon">${icons.home}</div>
+                <div class="property-card__image" style="${p.image ? `background-image: url('${p.image}'); background-size: cover; background-position: center;` : ''}">
+                    ${!p.image ? `<div class="property-card__image-pattern"></div>
+                    <div class="property-card__image-icon">${icons.home}</div>` : ''}
                     <span class="listing-badge listing-badge--${p.listingType.toLowerCase()} property-card__image-badge">${p.listingType}</span>
                     <button class="property-card__image-fav ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleSave('${p.id}')" title="${isSaved ? 'Remove from saved' : 'Save property'}">
                         ${icons.heart}
@@ -392,6 +403,7 @@ function openPropertyDetails(propId) {
     const modal = $('#propertyDetailsModal');
     $('#detailTitle').textContent = p.title;
     $('#detailBody').innerHTML = `
+        ${p.image ? `<img src="${p.image}" alt="${p.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 16px;">` : ''}
         <div class="detail-header">
             <div>
                 <div class="detail-price">${p.price}</div>

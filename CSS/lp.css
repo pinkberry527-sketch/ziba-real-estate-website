@@ -106,11 +106,22 @@ header{
 /* nav bar styling */
 
 .nav_bar{
-    width: 90%;
+    width: 100%;
+    padding: 20px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 auto; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+.nav_bar.scrolled {
+    background-color:var(--primary-color);
+    padding: 10px 5%;
+    box-shadow: 0 4px 10px var(--nutral-black-color);
 }
 
 .logo{
@@ -203,6 +214,7 @@ header{
     justify-content: space-between;
     align-items: center;
     margin: 0 auto; 
+    padding-top: 150px;
 }
 .hero_content{
     width: 30%;
