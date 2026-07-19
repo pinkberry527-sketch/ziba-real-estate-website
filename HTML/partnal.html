@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../CSS/partner.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kumbh+Sans:wght,YOPQ@100..900,300&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+Caucasian+Albanian&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="../assets/favicon.png"
+      type="image/x-icon"
+    />
+    <title>Ziba - Partner</title>
+  </head>
+  <body>
+    <header>
+      <nav class="nav_bar">
+        <div class="logo">
+          <a href="/HTML/index.html"
+            ><img src="../assets/white bg logo.png" alt="logo"
+          /></a>
+        </div>
+        <div class="nav_links">
+          <ul>
+            <li><a href="property.html?category=sales">Sales</a></li>
+            <li><a href="property.html?category=lease">Leasing</a></li>
+            <li><a href="property.html?category=stay">Stay</a></li>
+            <li><a href="../HTML/Contact.html">Contact</a></li>
+            <li><a href="#">Partners</a></li>
+          </ul>
+        </div>
+        <i class="fa-solid fa-bars" id="mobile_nav_btn"></i>
+        <div class="nav_btn">
+          <button><a href="../HTML/login.html">Login</a></button>
+        </div>
+
+        <div class="mobile_nav">
+          <div class="mobile_nav_header">
+            <div class="logo">
+              <a href="/HTML/index.html"
+                ><img
+                  src="../assets/ziba_logo_transparent black.png"
+                  alt="logo"
+              /></a>
+            </div>
+            <i class="fa-solid fa-xmark" id="mobile_nav_close"></i>
+          </div>
+          <div class="mobile_nav_body">
+            <ul>
+              <li><a href="property.html?category=sales">Sales</a></li>
+              <li><a href="property.html?category=lease">Leasing</a></li>
+              <li><a href="property.html?category=stay">Stay</a></li>
+              <li><a href="../HTML/Contact.html">Contact</a></li>
+              <li><a href="#">Partners</a></li>
+            </ul>
+          </div>
+          <!-- <div class="mobile_nav_footer">
+            <div class="mobile_nav_btn">
+              <button><a href="#">Login</a></button>
+            </div> -->
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <section class="search_bar_section">
+        <div class="search_container">
+          <h2>Find an agent/developer</h2>
+          <p>
+            Use the search bar below to find an agent or developer that is right
+            for you.
+          </p>
+          <div class="search_bar">
+            <i class="fa-solid fa-search"></i>
+            <input
+              type="search"
+              placeholder="Search by company name or agent name"
+              id="search"
+            />
+          </div>
+          <div class="filter_btn">
+            <button id="filter_btn">
+              <i class="fa-solid fa-filter"></i>
+              <span>Filter</span>
+            </button>
+          </div>
+          <div class="search_options" id="search_options">
+            <div class="search_options_header">
+              <h3>Filter Options</h3>
+              <i class="fa-solid fa-xmark" id="close_filter_btn"></i>
+            </div>
+            <div class="option">
+              <i class="fa-solid fa-location-dot"></i>
+              <input type="text" placeholder="Location" id="filter_location" />
+            </div>
+            <div class="option">
+              <i class="fa-solid fa-list"></i>
+              <select name="" id="filter_property_type">
+                <option value="" selected disabled>Property Type</option>
+                <option value="Land">Land</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Houses">Houses</option>
+                <option value="Commercial Property">Commercial Property</option>
+              </select>
+            </div>
+            <div class="option">
+              <i class="fa-solid fa-check"></i>
+              <select name="" id="filter_verified">
+                <option value="" disabled selected>Verified</option>
+                <option value="true">Verified</option>
+                <option value="false">Not Verified</option>
+              </select>
+            </div>
+            <div class="option_btn">
+              <button id="search_btn">
+                <i class="fa-solid fa-search"></i> Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="partner_display_section">
+        <div class="partner_display_header">
+          <span>Agents & Developers</span>
+        </div>
+        <div class="agent_card_container" id="agents_list"></div>
+      </div>
+    </main>
+    <footer>
+      <div class="footer">
+        <div class="footer_section">
+          <div class="logo">
+            <img src="/assets/ziba_logo_transparent black.png" alt="" />
+          </div>
+          <p>
+            The Beauty of Belonging. Curating Premium Sales, Leases, and Stays
+            Across Lagos.
+          </p>
+          <div class="social_links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="footer_section">
+          <h3>Explore</h3>
+          <div class="explore_links">
+            <ul>
+              <li><a href="#">Sales</a></li>
+              <li><a href="#">Leasing</a></li>
+              <li><a href="#">Stay</a></li>
+              <li><a href="#">Apartments</a></li>
+              <li><a href="#">Partners</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer_section">
+          <h3>Partners</h3>
+          <div class="partner_links">
+            <ul>
+              <li><a href="#">Real Estate Agents</a></li>
+              <li><a href="#">Property Managers</a></li>
+              <li><a href="#">Investors</a></li>
+              <li><a href="#">Developers</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer_section">
+          <h3>Contact</h3>
+          <div class="contact_info">
+            <span>Lagos office</span>
+            <p>
+              12B Admiralty Way, Lekki Phase 1,Lagos, Nigeria.
+              <br />
+              <i class="fa-solid fa-phone"></i>+234 800 000 0000
+              <br />
+              <i class="fa-regular fa-envelope"></i>hello@zibaestates.com
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="../javascript/script.js"></script>
+  </body>
+</html>

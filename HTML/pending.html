@@ -1,106 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pending Approval | Ziba Real Estate</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/CSS/auth.css">
+    <link rel="stylesheet" href="../CSS/auth.css">
     <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
 </head>
-<body class="auth-v2-body">
 
-    <a class="brand-mark" href="../index.html">
-        <img src="../assets/logo.jpeg" alt="Ziba Real Estate">
-        <span>ZIBA</span>
-    </a>
+<body>
+    <!-- Background Elements -->
+    <div class="auth-background"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
 
-    <div class="auth-flip-scene">
-        <div class="split-card">
-
-            <!-- Brand panel (left) -->
-            <div class="auth-cta-half">
-                <div class="brand-illustration pulsing"><i class="fas fa-hourglass-half"></i></div>
-                <span class="auth-cta-eyebrow">Step 3 of 3</span>
-                <h3>Sit tight — you're almost in.</h3>
-                <p>Our team, plus a second set of eyes, is reviewing your application right now.</p>
-                <ul class="brand-checklist">
-                    <li><i class="fas fa-circle-check"></i> Application received</li>
-                    <li><i class="fas fa-circle-check"></i> Under review by our team</li>
-                    <li><i class="fas fa-circle-check"></i> You'll get an email the moment you're approved</li>
-                </ul>
+    <!-- Main Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo Section -->
+            <div class="auth-logo">
+                <a href="index.html"><img src="../assets/logo.jpeg" alt="Ziba Real Estate"></a>
+                <h1>ZIBA</h1>
+                <p>Premium Real Estate</p>
             </div>
 
-            <!-- Status panel (right) -->
-            <div class="auth-form-half">
-                <div class="step-indicator" style="justify-content:flex-start;">
-                    <div class="step completed"><div class="step-number"><i class="fas fa-check"></i></div><span class="step-label">Account</span></div>
-                    <div class="step-line"></div>
-                    <div class="step completed"><div class="step-number"><i class="fas fa-check"></i></div><span class="step-label">Verify</span></div>
-                    <div class="step-line"></div>
-                    <div class="step active"><div class="step-number">3</div><span class="step-label">Review</span></div>
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step completed">
+                    <div class="step-number"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Account</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step completed">
+                    <div class="step-number"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Verify</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step active">
+                    <div class="step-number">3</div>
+                    <span class="step-label">Review</span>
+                </div>
+            </div>
+
+            <!-- Pending Status Content -->
+            <div class="pending-status">
+                <!-- Status Icon -->
+                <div class="status-icon">
+                    <i class="fas fa-clock"></i>
                 </div>
 
-                <div class="pending-status" style="text-align:left; padding: 0;">
-                    <div class="status-icon" style="margin: 0 0 var(--spacing-xl) 0;"><i class="fas fa-clock"></i></div>
+                <!-- Status Title -->
+                <h2 class="status-title">Your Account is Under Review</h2>
 
-                    <h2 class="status-title" style="text-align:left;">Your account is under review</h2>
+                <!-- Status Message -->
+                <p class="status-message">
+                    Thank you for your patience. Our team is carefully reviewing your agent application to ensure the
+                    highest quality standards for our platform.
+                </p>
 
-                    <p class="status-message" style="text-align:left; margin: 0 0 var(--spacing-2xl) 0; max-width: none;">
-                        Thanks for your patience. Our review team has been emailed your application
-                        and is checking it over to keep quality high across the platform.
-                    </p>
-
-                    <div class="status-details">
-                        <div class="status-row"><span class="status-label">Application status</span><span class="status-value"><span class="status-badge">Pending review</span></span></div>
-                        <div class="status-row"><span class="status-label">Submitted on</span><span class="status-value" id="submissionDate">--</span></div>
-                        <div class="status-row"><span class="status-label">Estimated review time</span><span class="status-value">24-48 hours</span></div>
-                        <div class="status-row"><span class="status-label">Reference ID</span><span class="status-value" id="referenceId">--</span></div>
+                <!-- Status Details -->
+                <div class="status-details">
+                    <div class="status-row">
+                        <span class="status-label">Application Status</span>
+                        <span class="status-value">
+                            <span class="status-badge">Pending Review</span>
+                        </span>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <a href="../index.html" class="auth-button" style="text-align: center; text-decoration: none;">
-                            <i class="fas fa-home" style="margin-right: 8px;"></i>Return to home
-                        </a>
-                        <button type="button" class="auth-button-secondary" onclick="handleLogout()">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>Sign out
-                        </button>
+                    <div class="status-row">
+                        <span class="status-label">Submitted On</span>
+                        <span class="status-value" id="submissionDate">--</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Estimated Review Time</span>
+                        <span class="status-value">24-48 hours</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Reference ID</span>
+                        <span class="status-value" id="referenceId">--</span>
                     </div>
                 </div>
 
-                <div class="auth-footer">
-                    <p class="auth-footer-text">
-                        Need help? <a href="#" class="auth-link" data-toast="Support team contact coming soon">Contact support</a>
-                    </p>
+                <!-- Action Buttons -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <a href="../index.html" class="auth-button" style="text-align: center; text-decoration: none;">
+                        <i class="fas fa-home" style="margin-right: 8px;"></i>
+                        Return to Home
+                    </a>
+
+                    <button type="button" class="auth-button-secondary" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
+                        Sign Out
+                    </button>
                 </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p class="auth-footer-text">
+                    Need help? <a href="#" class="auth-link"
+                        onclick="event.preventDefault(); Auth.showToast('Support team contact coming soon', 'info');">Contact
+                        Support</a>
+                </p>
             </div>
 
         </div>
     </div>
 
-    <script src="/auth.js"></script>
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
     <script>
+        // Generate reference ID and set submission date
         document.addEventListener('DOMContentLoaded', function () {
-            const stored = JSON.parse(localStorage.getItem('pendingApplication') || 'null');
-            const refId = stored ? stored.referenceId : ('ZBA-' + Math.random().toString(36).substr(2, 6).toUpperCase());
-            const dateStr = stored ? stored.submittedAt : new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
+            const refId = 'ZBA-' + Math.random().toString(36).substr(2, 6).toUpperCase();
             document.getElementById('referenceId').textContent = refId;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
             document.getElementById('submissionDate').textContent = dateStr;
         });
 
         function handleLogout() {
             localStorage.removeItem('pendingUser');
-            localStorage.removeItem('pendingApplication');
             localStorage.removeItem('selectedRole');
+            localStorage.removeItem('rememberedEmail');
 
             Auth.showToast('You have been signed out', 'success');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000);
         }
     </script>
 </body>
+
 </html>

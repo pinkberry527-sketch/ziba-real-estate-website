@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/CSS/property.css">
+    <link rel="stylesheet" href="/CSS/property_media_queries.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <title>Ziba Property Details</title> 
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="nav_bar">
+                <div class="logo">
+                    <img src="../assets/logo.jpeg" alt="logo">
+                </div>
+                <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <div class="nav-menu">
+                    <div class="nav_links"> 
+                        <ul>
+                            <li><a href="#">Sales</a></li>
+                            <li><a href="#">Leasing</a></li>
+                            <li><a href="#">Stay</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Partners</a></li>
+                        </ul>
+                    </div>
+                    <div class="nav_actions">
+                        <div class="nav_btn">
+                            <button><a href="#">Login</a></button>
+                        </div>
+                        <div class="nav_extra">
+                            <button class="wishlist-summary-btn" type="button" aria-label="Wishlist" aria-expanded="false">
+                                <i class="fa fa-heart"></i>
+                                <span id="wishlistCount">0</span>
+                            </button>
+                            <div class="wishlist-dropdown" id="wishlistDropdown" aria-hidden="true">
+                                <div class="wishlist-dropdown-header">
+                                    <span>Saved Properties</span>
+                                    <button class="wishlist-clear" type="button">Clear all</button>
+                                </div>
+                                <div class="wishlist-items" id="wishlistItems"></div>
+                                <div class="wishlist-empty">No saved properties yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="breadcrumb-main">
+        <div class="breadcrumb-outer">
+            <div class="container">
+                <div class="breadcrumb-content d-md-flex align-items-center pt-6">
+                    <h1 class="mb-0">PROPERTY DETAILS</h1>
+                </div>
+            </div>
+        </div>
+        <div class="dot-overlay"></div>
+    </section>
+
+    <main class="details-main">
+        <div class="container">
+            <div class="detail-grid" id="propertyDetails">
+                <div class="detail-image-card">
+                    <img id="detailImage" src="../asset/img1.jpg" alt="Property image">
+                </div>
+
+                <div class="detail-summary">
+                    <span class="badge" id="detailBadge">NEW</span>
+                    <h1 id="detailTitle">Property Title</h1>
+                    <div class="detail-meta">
+                        <span id="detailLocation">Lekki, Lagos</span>
+                        <span id="detailPrice">#0</span>
+                    </div>
+                    <p class="detail-description" id="detailDescription">Discover a beautiful property with premium finishes and elegant features, located in one of Lagos’s most sought-after neighborhoods.</p>
+
+                    <div class="detail-feature-list">
+                        <div class="detail-feature"><strong>Bedrooms</strong><span id="detailBedrooms">0</span></div>
+                        <div class="detail-feature"><strong>Bathrooms</strong><span id="detailBathrooms">0</span></div>
+                        <div class="detail-feature"><strong>Size</strong><span id="detailSize">0 sqm</span></div>
+                        <div class="detail-feature"><strong>Type</strong><span id="detailType">N/A</span></div>
+                    </div>
+
+                    <div class="detail-actions">
+                        <a href="#" class="back-btn">Back to Listings</a>
+                        <button class="wishlist-btn" id="detailWishlistBtn" type="button"><i class="fa fa-heart"></i> Add to wishlist</button>
+                    </div>
+                </div>
+            </div>
+
+            <section class="detail-more">
+                <h2>Property Overview</h2>
+                <p id="detailLongDescription">This property delivers a seamless combination of modern architecture and exceptional finishes. It is built for comfort, privacy, and style, with indoor-outdoor flow, generous living spaces, and attention to detail in every room.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer">
+            <div class="footer_section">
+                <div class="logo">
+                    <img src="/assets/logo.jpeg" alt="logo" />
+                </div>
+                <p>
+                    The Beauty of Belonging. Curating Premium Sales, Leases, and Stays
+                    Across Lagos.
+                </p>
+                <div class="social_links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <div class="footer_section">
+                <h3>Explore</h3>
+                <div class="explore_links">
+                    <ul>
+                        <li><a href="#">Sales</a></li>
+                        <li><a href="#">Leasing</a></li>
+                        <li><a href="#">Stay</a></li>
+                        <li><a href="#">Apartments</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_section">
+                <h3>Partners</h3>
+                <div class="partner_links">
+                    <ul>
+                        <li><a href="#">Real Estate Agents</a></li>
+                        <li><a href="#">Property Managers</a></li>
+                        <li><a href="#">Investors</a></li>
+                        <li><a href="#">Developers</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_section">
+                <h3>Contact</h3>
+                <div class="contact_info">
+                    <span>Lagos office</span>
+                    <p>
+                        12B Admiralty Way, Lekki Phase 1,Lagos, Nigeria.
+                        <br />
+                        <i class="fa-solid fa-phone"></i>+234 800 000 0000
+                        <br />
+                        <i class="fa-regular fa-envelope"></i>hello@zibaestates.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
