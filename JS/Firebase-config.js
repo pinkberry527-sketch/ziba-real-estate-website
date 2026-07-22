@@ -10,12 +10,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyD30AKjyl-xMSuH-W62J0251mmimyKZ1Q8",
+    authDomain: "ziba-real-estate.firebaseapp.com",
+    projectId: "ziba-real-estate",
+    storageBucket: "ziba-real-estate.firebasestorage.app",
+    appId: "405536277728",
+    messagingSenderId: "G-XH6CJP8YBP"  
 };
 
 const app = initializeApp(firebaseConfig);
