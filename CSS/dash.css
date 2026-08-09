@@ -1398,3 +1398,124 @@ img { max-width: 100%; display: block; }
     background: var(--border-color);
     margin: 32px 0;
 }
+
+/* -------------------- AUTH GATE (loading state) -------------------- */
+.auth-gate {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--bg-color);
+}
+
+.auth-gate__spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: authGateSpin 0.8s linear infinite;
+}
+
+.auth-gate p {
+    font-size: var(--text-size-md);
+    color: var(--nutral-gray-color);
+}
+
+@keyframes authGateSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* -------------------- SIDEBAR FOOTER (sign out) -------------------- */
+.sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sidebar-signout {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nutral-gray-color);
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+.sidebar-signout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+}
+
+/* -------------------- PROPERTY PHOTO UPLOAD (Add/Edit modals) -------------------- */
+.photo-upload-zone {
+    position: relative;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--secondary-button-border-radius);
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    overflow: hidden;
+    background: var(--bg-color-light);
+}
+.photo-upload-zone:hover {
+    border-color: var(--accent-color);
+    background: rgba(217, 119, 6, 0.03);
+}
+
+.photo-upload-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.photo-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--nutral-gray-color);
+    font-size: var(--text-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 20px;
+    pointer-events: none;
+}
+
+.photo-upload-preview {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+
+/* -------------------- LISTING TABLE THUMBNAILS -------------------- */
+.listing-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+}
+
+.listing-thumb--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color-light);
+    color: var(--nutral-gray-color);
+    border: 1px solid var(--border-color);
+}
+.listing-thumb--placeholder svg { width: 18px; height: 18px; }

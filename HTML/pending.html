@@ -14,8 +14,8 @@
 </head>
 <body class="auth-v2-body">
 
-    <a class="brand-mark" href="index.html">
-        <img src="../assets/logo.jpeg" alt="Ziba Real Estate">
+    <a class="brand-mark" href="lp.html">
+        <img src="/assets/WhatsApp_Image_2026-04-07_at_18.35.51-removebg-preview.png" alt="Ziba Real Estate">
         <span>ZIBA</span>
     </a>
 
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <script type="module" src="/JS/firebase-config.js"></script>
+    <script type="module" src="/JS/Firebase-config.js"></script>
     <script src="/JS/auth.js"></script>
     <script>
         function renderNotFound() {
@@ -135,6 +135,20 @@
                 document.getElementById('statusEyebrow').textContent = 'Update';
                 document.getElementById('statusHeadline').textContent = "This one didn't go through.";
                 document.getElementById('statusCopy').textContent = 'Contact support if you have questions about why, or to try again.';
+            } else if (app.status === 'suspended') {
+                iconEl.className = 'status-icon';
+                iconEl.style.borderColor = 'var(--warning-color)';
+                iconEl.style.background = 'rgba(245, 158, 11, 0.1)';
+                iconEl.innerHTML = '<i class="fas fa-ban" style="color:var(--warning-color);"></i>';
+                titleEl.textContent = 'Your agent account is suspended';
+                messageEl.textContent = "Your listing access has been paused. Contact support if you'd like more detail on why, or to appeal.";
+                badgeWrap.innerHTML = '<span class="status-badge" style="background:rgba(245,158,11,0.15);color:var(--warning-color);">Suspended</span>';
+                reviewStep.classList.remove('active');
+                illustration.classList.remove('pulsing');
+                illustration.innerHTML = '<i class="fas fa-ban"></i>';
+                document.getElementById('statusEyebrow').textContent = 'Account paused';
+                document.getElementById('statusHeadline').textContent = 'Access is currently paused.';
+                document.getElementById('statusCopy').textContent = 'Reach out to support for details on reinstating your account.';
             } else {
                 iconEl.className = 'status-icon';
                 iconEl.innerHTML = '<i class="fas fa-clock"></i>';
@@ -145,29 +159,54 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const applicationId = localStorage.getItem('applicationId');
-            if (!applicationId) { renderNotFound(); return; }
-
             // Poll for ZibaDB since firebase-config.js loads as a module and
             // may finish initializing a moment after this inline script runs.
             const waitForDb = setInterval(() => {
                 if (typeof window.ZibaDB === 'undefined') return;
                 clearInterval(waitForDb);
 
-                window.ZibaDB.watchApplication(applicationId, (app) => {
-                    if (!app) { renderNotFound(); return; }
-                    renderApplication(app);
+                // Always defer to whoever is actually signed in right now,
+                // rather than trusting localStorage on its own — that value
+                // isn't tied to a specific account, so switching between
+                // accounts in the same browser (e.g. while testing) could
+                // otherwise show a leftover application from a different
+                // account entirely.
+                window.ZibaDB.watchAuthState((user) => {
+                    if (!user) {
+                        // Not signed in — fall back to whatever's cached
+                        // locally, if anything (e.g. right after submitting,
+                        // before any explicit login step).
+                        const cached = localStorage.getItem('applicationId');
+                        if (cached) startWatching(cached);
+                        else renderNotFound();
+                        return;
+                    }
+
+                    window.ZibaDB.getUserProfile(user.uid).then((profile) => {
+                        if (!profile || !profile.latestApplicationId) {
+                            renderNotFound();
+                            return;
+                        }
+                        localStorage.setItem('applicationId', profile.latestApplicationId);
+                        startWatching(profile.latestApplicationId);
+                    });
                 });
             }, 100);
         });
 
-        function handleLogout() {
-            localStorage.removeItem('pendingUser');
-            localStorage.removeItem('pendingApplication');
-            localStorage.removeItem('applicationId');
+        function startWatching(applicationId) {
+            window.ZibaDB.watchApplication(applicationId, (app) => {
+                if (!app) { renderNotFound(); return; }
+                renderApplication(app);
+            });
+        }
 
-            Auth.showToast('You have been signed out', 'success');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        function handleLogout() {
+            localStorage.removeItem('applicationId');
+            window.ZibaDB.signOutUser().then(() => {
+                Auth.showToast('You have been signed out', 'success');
+                setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+            });
         }
     </script>
 </body>

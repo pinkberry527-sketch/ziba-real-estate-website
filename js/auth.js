@@ -9,7 +9,11 @@ const Auth = (() => {
         const existing = document.querySelector('.toast-notification');
         if (existing) existing.remove();
 
-        const icons = { success: 'fa-check-circle', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-circle-exclamation',
+            info: 'fa-circle-info'
+        };
         const toast = document.createElement('div');
         toast.className = `toast-notification toast-${type}`;
         toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span>`;
@@ -36,6 +40,7 @@ const Auth = (() => {
         err.innerHTML = `<i class="fas fa-circle-exclamation"></i> ${message}`;
         input.closest('.form-group').appendChild(err);
     }
+
     function clearFieldError(input) {
         input.classList.remove('error');
         const group = input.closest('.form-group');
@@ -67,6 +72,7 @@ const Auth = (() => {
         if (/[^A-Za-z0-9]/.test(pw)) score++;
         return score;
     }
+
     function initPasswordStrength() {
         const pwInput = document.getElementById('registerPassword');
         if (!pwInput) return;
@@ -76,13 +82,24 @@ const Auth = (() => {
 
         pwInput.addEventListener('input', () => {
             const val = pwInput.value;
-            if (!val) { wrap.classList.remove('visible'); text.textContent = ''; return; }
+            if (!val) {
+                wrap.classList.remove('visible');
+                text.textContent = '';
+                return;
+            }
             wrap.classList.add('visible');
             const score = scorePassword(val);
             bar.className = 'password-strength-bar';
-            if (score <= 2) { bar.classList.add('weak'); text.textContent = 'Weak — add length, numbers, symbols'; }
-            else if (score <= 3) { bar.classList.add('medium'); text.textContent = 'Getting there'; }
-            else { bar.classList.add('strong'); text.textContent = 'Strong password'; }
+            if (score <= 2) {
+                bar.classList.add('weak');
+                text.textContent = 'Weak — add length, numbers, symbols';
+            } else if (score <= 3) {
+                bar.classList.add('medium');
+                text.textContent = 'Getting there';
+            } else {
+                bar.classList.add('strong');
+                text.textContent = 'Strong password';
+            }
         });
     }
 
@@ -93,7 +110,10 @@ const Auth = (() => {
         if (!cards.length) return;
 
         function selectRole(card) {
-            cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); });
+            cards.forEach(c => {
+                c.classList.remove('active');
+                c.setAttribute('aria-pressed', 'false');
+            });
             card.classList.add('active');
             card.setAttribute('aria-pressed', 'true');
             if (agentFields) agentFields.classList.toggle('visible', card.dataset.role === 'agent');
@@ -102,7 +122,10 @@ const Auth = (() => {
         cards.forEach(card => {
             card.addEventListener('click', () => selectRole(card));
             card.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectRole(card); }
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectRole(card);
+                }
             });
         });
     }
@@ -143,8 +166,13 @@ const Auth = (() => {
                 });
             };
 
-            input.addEventListener('change', () => { if (input.files[0]) showPreview(input.files[0]); });
-            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+            input.addEventListener('change', () => {
+                if (input.files[0]) showPreview(input.files[0]);
+            });
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
             zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -191,10 +219,12 @@ const Auth = (() => {
             faces.forEach(face => {
                 const halves = face.querySelectorAll('.auth-form-half, .auth-cta-half');
                 let faceHeight = 0;
-                halves.forEach(h => { faceHeight = Math.max(faceHeight, h.scrollHeight); });
+                halves.forEach(h => {
+                    faceHeight = Math.max(faceHeight, h.scrollHeight);
+                });
                 tallest = Math.max(tallest, faceHeight);
             });
-            if (tallest > 0) card.style.height = tallest + 'px';
+            if (tallest > 0) card.style.height = (tallest + 4) + 'px';
         }
 
         syncFlipCardHeight();
@@ -225,6 +255,24 @@ const Auth = (() => {
         else localStorage.removeItem(REMEMBER_KEY);
     }
 
+    /* ---------- Wait for firebase-config.js (loads as an async module, so
+       it may not be ready the instant a fast click submits a form) ---------- */
+    function ensureZibaDB(timeoutMs = 4000) {
+        if (typeof window.ZibaDB !== 'undefined') return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            const check = setInterval(() => {
+                if (typeof window.ZibaDB !== 'undefined') {
+                    clearInterval(check);
+                    resolve();
+                } else if (Date.now() - start > timeoutMs) {
+                    clearInterval(check);
+                    reject(new Error('Firebase did not load in time'));
+                }
+            }, 100);
+        });
+    }
+
     /* ---------- Login form ---------- */
     function initLoginForm() {
         const form = document.getElementById('loginForm');
@@ -237,28 +285,67 @@ const Auth = (() => {
             const remember = document.getElementById('rememberMe').checked;
             let valid = true;
 
-            if (!/^\S+@\S+\.\S+$/.test(email.value)) { setFieldError(email, 'Enter a valid email address'); valid = false; }
-            else clearFieldError(email);
+            if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+                setFieldError(email, 'Enter a valid email address');
+                valid = false;
+            } else clearFieldError(email);
 
-            if (!password.value) { setFieldError(password, 'Enter your password'); valid = false; }
-            else clearFieldError(password);
+            if (!password.value) {
+                setFieldError(password, 'Enter your password');
+                valid = false;
+            } else clearFieldError(password);
 
             if (!valid) return;
-
-            applyRememberMe(email.value, remember);
 
             const btn = form.querySelector('.auth-button');
             btn.classList.add('loading');
             btn.disabled = true;
 
-            // NOTE: this is a frontend-only demo. Swap this timeout for a real
-            // call to your auth API, then redirect based on its response.
-            setTimeout(() => {
+            ensureZibaDB().then(() => {
+                applyRememberMe(email.value, remember);
+
+                window.ZibaDB.loginUser(email.value, password.value)
+                    .then((profile) => {
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        showToast('Signed in successfully', 'success');
+
+                        if (profile.role === 'agent') {
+                            if (profile.agentStatus === 'approved') {
+                                setTimeout(() => {
+                                    window.location.href = 'dash.html';
+                                }, 700);
+                            } else {
+                                // Not approved yet (or rejected/suspended) — send
+                                // them to the status page. Their profile already
+                                // carries the application ID, saved there at
+                                // submission time, so no extra lookup is needed
+                                // (and no list-query, which security rules can't
+                                // safely scope to "your own applications only").
+                                if (profile.latestApplicationId) {
+                                    localStorage.setItem('applicationId', profile.latestApplicationId);
+                                }
+                                setTimeout(() => {
+                                    window.location.href = 'pending.html';
+                                }, 700);
+                            }
+                        } else {
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 700);
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Login failed:', err);
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        showToast('Sign-in failed — check your email and password', 'error');
+                    });
+            }).catch(() => {
                 btn.classList.remove('loading');
                 btn.disabled = false;
-                showToast('Signed in successfully', 'success');
-                setTimeout(() => { window.location.href = 'lp.html'; }, 700);
-            }, 900);
+                showToast('Could not connect — check your internet connection and try again', 'error');
+            });
         });
     }
 
@@ -276,19 +363,30 @@ const Auth = (() => {
             const role = getSelectedRole();
             let valid = true;
 
-            if (!fullName.value.trim()) { setFieldError(fullName, 'Enter your full name'); valid = false; }
-            else clearFieldError(fullName);
+            if (!fullName.value.trim()) {
+                setFieldError(fullName, 'Enter your full name');
+                valid = false;
+            } else clearFieldError(fullName);
 
-            if (!/^\S+@\S+\.\S+$/.test(email.value)) { setFieldError(email, 'Enter a valid email address'); valid = false; }
-            else clearFieldError(email);
+            if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+                setFieldError(email, 'Enter a valid email address');
+                valid = false;
+            } else clearFieldError(email);
 
-            if (password.value.length < 8) { setFieldError(password, 'Use at least 8 characters'); valid = false; }
-            else clearFieldError(password);
+            if (password.value.length < 8) {
+                setFieldError(password, 'Use at least 8 characters');
+                valid = false;
+            } else clearFieldError(password);
 
-            if (confirm.value !== password.value || !confirm.value) { setFieldError(confirm, 'Passwords do not match'); valid = false; }
-            else clearFieldError(confirm);
+            if (confirm.value !== password.value || !confirm.value) {
+                setFieldError(confirm, 'Passwords do not match');
+                valid = false;
+            } else clearFieldError(confirm);
 
-            if (!role) { showToast('Choose whether you\'re a buyer or an agent', 'error'); valid = false; }
+            if (!role) {
+                showToast('Choose whether you\'re a buyer or an agent', 'error');
+                valid = false;
+            }
 
             if (!valid) return;
 
@@ -296,25 +394,125 @@ const Auth = (() => {
             btn.classList.add('loading');
             btn.disabled = true;
 
-            setTimeout(() => {
+            ensureZibaDB().then(() => {
+                window.ZibaDB.registerUser(email.value.trim(), password.value, {
+                        fullName: fullName.value.trim(),
+                        email: email.value.trim(),
+                        role
+                    })
+                    .then(() => {
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+
+                        if (role === 'agent') {
+                            showToast('Account created — let\'s verify your business next', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'verify-agent.html';
+                            }, 700);
+                        } else {
+                            showToast('Welcome to Ziba!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 700);
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Registration failed:', err);
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        if (err.code === 'auth/email-already-in-use') {
+                            setFieldError(email, 'An account with this email already exists');
+                        } else {
+                            showToast('Could not create account — try again', 'error');
+                        }
+                    });
+            }).catch(() => {
                 btn.classList.remove('loading');
                 btn.disabled = false;
-
-                localStorage.setItem('pendingUser', JSON.stringify({
-                    fullName: fullName.value.trim(),
-                    email: email.value.trim(),
-                    role
-                }));
-
-                if (role === 'agent') {
-                    showToast('Account created — let\'s verify your business next', 'success');
-                    setTimeout(() => { window.location.href = 'verify-agent.html'; }, 700);
-                } else {
-                    showToast('Welcome to Ziba!', 'success');
-                    setTimeout(() => { window.location.href = 'lp.html'; }, 700);
-                }
-            }, 900);
+                showToast('Could not connect — check your internet connection and try again', 'error');
+            });
         });
+    }
+
+    /* ---------- File → base64 (no Storage/billing plan needed) ----------
+       Firestore documents cap out at 1MB total, and base64 text runs about
+       33% larger than the original file, so images get compressed down
+       before encoding. PDFs can't be shrunk the same way — those just get
+       a straight size check with a clear error if they're too big.
+    ------------------------------------------------------------ */
+
+    function compressImageToDataURL(file, maxDim, quality) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Could not read file'));
+            reader.onload = () => {
+                img.onerror = () => reject(new Error('Could not read image'));
+                img.onload = () => {
+                    let {
+                        width,
+                        height
+                    } = img;
+                    if (width > maxDim || height > maxDim) {
+                        const scale = maxDim / Math.max(width, height);
+                        width = Math.round(width * scale);
+                        height = Math.round(height * scale);
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Could not read file'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    const MAX_DATA_URL_LENGTH = 500000; // ~500KB, leaves headroom under Firestore's 1MB doc cap
+
+    // Photo: always an image — compress it, trying progressively harder if
+    // the first pass is still too big.
+    async function processPhoto(file) {
+        let dataUrl = await compressImageToDataURL(file, 800, 0.7);
+        if (dataUrl.length > MAX_DATA_URL_LENGTH) {
+            dataUrl = await compressImageToDataURL(file, 500, 0.5);
+        }
+        if (dataUrl.length > MAX_DATA_URL_LENGTH) {
+            throw new Error('Photo is too large even after compression — try a smaller image');
+        }
+        return dataUrl;
+    }
+
+    // ID document: image or PDF. Images get compressed like the photo;
+    // PDFs are read as-is with a straight size check since they can't be
+    // shrunk client-side.
+    async function processIdDocument(file) {
+        if (file.type === 'application/pdf') {
+            const dataUrl = await readFileAsDataURL(file);
+            if (dataUrl.length > MAX_DATA_URL_LENGTH) {
+                throw new Error('PDF is too large — please upload one under ~350KB, or a photo of the document instead');
+            }
+            return dataUrl;
+        }
+        let dataUrl = await compressImageToDataURL(file, 1000, 0.75);
+        if (dataUrl.length > MAX_DATA_URL_LENGTH) {
+            dataUrl = await compressImageToDataURL(file, 700, 0.5);
+        }
+        if (dataUrl.length > MAX_DATA_URL_LENGTH) {
+            throw new Error('Document image is too large even after compression — try a smaller image');
+        }
+        return dataUrl;
     }
 
     /* ---------- Agent verification form + dual-approval email ---------- */
@@ -328,55 +526,97 @@ const Auth = (() => {
             const bio = document.getElementById('bio');
             let valid = true;
 
-            if (!businessName.value.trim()) { setFieldError(businessName, 'Business name is required'); valid = false; }
-            else clearFieldError(businessName);
+            if (!businessName.value.trim()) {
+                setFieldError(businessName, 'Business name is required');
+                valid = false;
+            } else clearFieldError(businessName);
 
             if (!valid) return;
 
-            if (typeof window.ZibaDB === 'undefined') {
-                showToast('Database not connected — check firebase-config.js is loaded', 'error');
-                return;
-            }
+            const photoFile = document.getElementById('profilePhoto').files[0] || null;
+            const docFile = document.getElementById('idDocument').files[0] || null;
 
             const btn = form.querySelector('.auth-button');
             btn.classList.add('loading');
             btn.disabled = true;
 
-            const pendingUser = JSON.parse(localStorage.getItem('pendingUser') || '{}');
-            const refId = 'ZBA-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            ensureZibaDB().then(() => {
+                const currentUser = window.ZibaDB.getCurrentUser();
+                if (!currentUser) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    showToast('Your session expired — please sign in again', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 900);
+                    return;
+                }
 
-            const applicationData = {
-                fullName: pendingUser.fullName || 'Unknown applicant',
-                email: pendingUser.email || 'Unknown email',
-                businessName: businessName.value.trim(),
-                bio: bio.value.trim() || 'Not provided',
-                referenceId: refId,
-                submittedAt: new Date().toLocaleString()
-            };
+                window.ZibaDB.getUserProfile(currentUser.uid).then((profile) => {
+                    const refId = 'ZBA-' + Math.random().toString(36).substr(2, 6).toUpperCase();
 
-            // The database write is the real submission — status lives there
-            // now, not in localStorage. The email is just a heads-up ping,
-            // so its failure shouldn't block the applicant.
-            window.ZibaDB.submitApplication(applicationData)
-                .then((applicationId) => {
-                    localStorage.setItem('applicationId', applicationId);
-                    localStorage.setItem('pendingApplication', JSON.stringify(applicationData));
+                    // Both files are optional — missing ones just resolve to null
+                    // rather than blocking the submission.
+                    const preparePhoto = photoFile ? processPhoto(photoFile) : Promise.resolve(null);
+                    const prepareDoc = docFile ? processIdDocument(docFile) : Promise.resolve(null);
 
-                    sendApprovalEmails(applicationData).catch((err) => {
-                        console.error('Approval email failed (application was still saved):', err);
+                    Promise.all([preparePhoto, prepareDoc]).then(([photoBase64, idDocumentBase64]) => {
+                        const applicationData = {
+                            uid: currentUser.uid,
+                            fullName: (profile && profile.fullName) || 'Unknown applicant',
+                            email: currentUser.email,
+                            businessName: businessName.value.trim(),
+                            bio: bio.value.trim() || 'Not provided',
+                            referenceId: refId,
+                            submittedAt: new Date().toLocaleString(),
+                            photoBase64: photoBase64 || null,
+                            idDocumentBase64: idDocumentBase64 || null,
+                            idDocumentIsPdf: docFile ? docFile.type === 'application/pdf' : false,
+                            idDocumentName: docFile ? docFile.name : null
+                        };
+
+                        // The database write is the real submission — status lives
+                        // there now, not in localStorage. The email is just a
+                        // heads-up ping, so its failure shouldn't block the applicant.
+                        window.ZibaDB.submitApplication(applicationData)
+                            .then((applicationId) => {
+                                localStorage.setItem('applicationId', applicationId);
+
+                                sendApprovalEmails(applicationData).catch((err) => {
+                                    console.error('Approval email failed (application was still saved):',
+                                        err);
+                                });
+
+                                btn.classList.remove('loading');
+                                btn.disabled = false;
+                                showToast('Submitted for review', 'success');
+                                setTimeout(() => {
+                                    window.location.href = 'pending.html';
+                                }, 700);
+                            })
+                            .catch((err) => {
+                                console.error('Saving application failed:', err);
+                                btn.classList.remove('loading');
+                                btn.disabled = false;
+                                showToast('Could not submit — check your connection and try again', 'error');
+                            });
+                    }).catch((err) => {
+                        console.error('File processing failed:', err);
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        showToast(err.message || 'Could not process your files — try smaller files', 'error');
                     });
-
+                }).catch((err) => {
+                    console.error('Could not load your profile:', err);
                     btn.classList.remove('loading');
                     btn.disabled = false;
-                    showToast('Submitted for review', 'success');
-                    setTimeout(() => { window.location.href = 'pending.html'; }, 700);
-                })
-                .catch((err) => {
-                    console.error('Saving application failed:', err);
-                    btn.classList.remove('loading');
-                    btn.disabled = false;
-                    showToast('Could not submit — check your connection and try again', 'error');
+                    showToast('Could not submit — try refreshing and signing in again', 'error');
                 });
+            }).catch(() => {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Could not connect — check your internet connection and try again', 'error');
+            });
         });
     }
 
@@ -428,5 +668,7 @@ const Auth = (() => {
 
     document.addEventListener('DOMContentLoaded', init);
 
-    return { showToast };
+    return {
+        showToast
+    };
 })();

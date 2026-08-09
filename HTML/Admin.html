@@ -10,13 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/CSS/auth.css">
-    <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/logos/favicon.png">
     <meta name="robots" content="noindex, nofollow">
 </head>
 <body class="auth-v2-body">
 
     <a class="brand-mark" href="index.html">
-        <img src="../assets/logo.jpeg" alt="Ziba Real Estate">
+        <img src="/assets/WhatsApp_Image_2026-04-07_at_18.35.51-removebg-preview.png" alt="Ziba Real Estate">
         <span>ZIBA</span>
     </a>
 
@@ -58,17 +58,28 @@
             </button>
         </div>
 
+        <div class="admin-tabs">
+            <button type="button" class="admin-tab active" data-tab="pending" onclick="switchTab('pending')">Pending review</button>
+            <button type="button" class="admin-tab" data-tab="approved" onclick="switchTab('approved')">Approved agents</button>
+            <button type="button" class="admin-tab" data-tab="suspended" onclick="switchTab('suspended')">Suspended</button>
+        </div>
+
         <div id="queueList"></div>
         <div id="queueEmpty" class="queue-empty" style="display:none;">
             <i class="fas fa-circle-check" style="font-size: var(--text-size-2xl); color: var(--success-color); margin-bottom: var(--spacing-md);"></i>
-            <p>Nothing waiting on review right now.</p>
+            <p id="queueEmptyText">Nothing here right now.</p>
         </div>
     </div>
+
+    <!-- Detail modal is injected here on click -->
+    <div id="modalRoot"></div>
 
     <script type="module" src="/JS/firebase-config.js"></script>
     <script src="/JS/auth.js"></script>
     <script>
         let unsubscribeQueue = null;
+        let currentTab = 'pending';
+        let currentApps = []; // cached so the modal can look up a card's full data by id
 
         function waitForDb(callback) {
             const check = setInterval(() => {
@@ -78,7 +89,70 @@
             }, 100);
         }
 
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        /* ---------- Tabs ---------- */
+
+        const TAB_CONFIG = {
+            pending: { emptyText: 'Nothing waiting on review right now.' },
+            approved: { emptyText: 'No approved agents yet.' },
+            suspended: { emptyText: 'No suspended agents.' }
+        };
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.admin-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            document.getElementById('queueEmptyText').textContent = TAB_CONFIG[tab].emptyText;
+
+            if (unsubscribeQueue) unsubscribeQueue();
+            unsubscribeQueue = window.ZibaDB.watchApplicationsByStatus(tab, renderQueue);
+        }
+
+        /* ---------- Card list ---------- */
+
+        function actionButtonsFor(app) {
+            if (app.status === 'pending') {
+                return `
+                    <button type="button" class="auth-button" style="background:var(--success-color); box-shadow:none;" onclick="event.stopPropagation(); reviewFromCard('${app.id}','${app.uid || ''}','approved',this)">
+                        <i class="fas fa-check" style="margin-right:6px;"></i>Approve
+                    </button>
+                    <button type="button" class="auth-button-secondary" style="border-color:var(--error-color); color:var(--error-color);" onclick="event.stopPropagation(); reviewFromCard('${app.id}','${app.uid || ''}','rejected',this)">
+                        <i class="fas fa-xmark" style="margin-right:6px;"></i>Reject
+                    </button>`;
+            }
+            if (app.status === 'approved') {
+                return `
+                    <button type="button" class="auth-button-secondary" style="border-color:var(--warning-color); color:var(--warning-color);" onclick="event.stopPropagation(); reviewFromCard('${app.id}','${app.uid || ''}','suspended',this)">
+                        <i class="fas fa-ban" style="margin-right:6px;"></i>Suspend
+                    </button>`;
+            }
+            if (app.status === 'suspended') {
+                return `
+                    <button type="button" class="auth-button" style="box-shadow:none;" onclick="event.stopPropagation(); reviewFromCard('${app.id}','${app.uid || ''}','approved',this)">
+                        <i class="fas fa-rotate-left" style="margin-right:6px;"></i>Reactivate
+                    </button>`;
+            }
+            return '';
+        }
+
+        function badgeFor(app) {
+            const map = {
+                pending: '<span class="status-badge">Pending</span>',
+                approved: '<span class="status-badge" style="background:rgba(16,185,129,0.15); color:var(--success-color);">Approved</span>',
+                suspended: '<span class="status-badge" style="background:rgba(245,158,11,0.15); color:var(--warning-color);">Suspended</span>',
+                rejected: '<span class="status-badge" style="background:rgba(239,68,68,0.15); color:var(--error-color);">Rejected</span>'
+            };
+            return map[app.status] || '';
+        }
+
         function renderQueue(apps) {
+            currentApps = apps;
             const list = document.getElementById('queueList');
             const empty = document.getElementById('queueEmpty');
 
@@ -90,68 +164,132 @@
             empty.style.display = 'none';
 
             list.innerHTML = apps.map(app => `
-                <div class="app-card" data-id="${app.id}">
+                <div class="app-card" data-id="${app.id}" onclick="openDetail('${app.id}')">
                     <div class="app-card-header">
                         <div>
                             <h3>${escapeHtml(app.fullName || 'Unknown applicant')}</h3>
                             <p>${escapeHtml(app.email || '')} &middot; ${escapeHtml(app.businessName || '')}</p>
                         </div>
-                        <span class="status-badge">Pending</span>
+                        ${badgeFor(app)}
                     </div>
                     <p class="app-card-bio">${escapeHtml(app.bio || 'No bio provided')}</p>
                     <div class="app-card-meta">
                         <span>Ref: ${escapeHtml(app.referenceId || '--')}</span>
                         <span>Submitted: ${escapeHtml(app.submittedAt || '--')}</span>
+                        ${app.photoBase64 || app.idDocumentBase64 ? '<span><i class="fas fa-paperclip"></i> Files attached</span>' : ''}
                     </div>
-                    <div class="app-card-actions">
-                        <button type="button" class="auth-button" style="background:var(--success-color); box-shadow:none;" onclick="reviewApplication('${app.id}','approved',this)">
-                            <i class="fas fa-check" style="margin-right:6px;"></i>Approve
-                        </button>
-                        <button type="button" class="auth-button-secondary" style="border-color:var(--error-color); color:var(--error-color);" onclick="reviewApplication('${app.id}','rejected',this)">
-                            <i class="fas fa-xmark" style="margin-right:6px;"></i>Reject
-                        </button>
-                    </div>
+                    <div class="app-card-actions">${actionButtonsFor(app)}</div>
                 </div>
             `).join('');
         }
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
+        /* ---------- Detail modal ---------- */
+
+        function openDetail(appId) {
+            const app = currentApps.find(a => a.id === appId);
+            if (!app) return;
+
+            const photoBlock = app.photoBase64
+                ? `<img class="modal-photo" src="${app.photoBase64}" alt="Profile photo">`
+                : `<div class="modal-photo-placeholder"><i class="fas fa-user"></i></div>`;
+
+            let docBlock = '<p style="color:var(--muted-text-color); font-size: var(--text-size-sm);">No document uploaded</p>';
+            if (app.idDocumentBase64) {
+                docBlock = app.idDocumentIsPdf
+                    ? `<a class="modal-doc-link" href="${app.idDocumentBase64}" target="_blank" rel="noopener" download="${escapeHtml(app.idDocumentName || 'document.pdf')}"><i class="fas fa-file-pdf"></i> ${escapeHtml(app.idDocumentName || 'View document')}</a>`
+                    : `<a href="${app.idDocumentBase64}" target="_blank" rel="noopener"><img class="modal-doc-image" src="${app.idDocumentBase64}" alt="ID document"></a>`;
+            }
+
+            const modalRoot = document.getElementById('modalRoot');
+            modalRoot.innerHTML = `
+                <div class="modal-overlay" onclick="if(event.target === this) closeDetail()">
+                    <div class="modal-card">
+                        <button type="button" class="modal-close" onclick="closeDetail()"><i class="fas fa-xmark"></i></button>
+                        ${photoBlock}
+                        <h2 class="auth-title" style="text-align:left; margin-bottom:4px;">${escapeHtml(app.fullName || 'Unknown applicant')}</h2>
+                        <p class="auth-subtitle" style="text-align:left; margin-bottom:var(--spacing-xl);">${badgeFor(app)}</p>
+
+                        <div class="modal-field"><label>Email</label><p>${escapeHtml(app.email || '--')}</p></div>
+                        <div class="modal-field"><label>Business name</label><p>${escapeHtml(app.businessName || '--')}</p></div>
+                        <div class="modal-field"><label>Bio</label><p>${escapeHtml(app.bio || 'Not provided')}</p></div>
+                        <div class="modal-field"><label>ID document</label>${docBlock}</div>
+                        <div class="modal-field"><label>Reference ID</label><p>${escapeHtml(app.referenceId || '--')}</p></div>
+                        <div class="modal-field"><label>Submitted</label><p>${escapeHtml(app.submittedAt || '--')}</p></div>
+                        ${app.reviewedBy ? `<div class="modal-field"><label>Last reviewed by</label><p>${escapeHtml(app.reviewedBy)}</p></div>` : ''}
+
+                        <div class="modal-actions" id="modalActions"></div>
+                    </div>
+                </div>
+            `;
+            renderModalActions(app);
         }
 
-        function reviewApplication(id, status, btn) {
-            const card = btn.closest('.app-card');
-            card.style.opacity = '0.5';
-            card.querySelectorAll('button').forEach(b => b.disabled = true);
+        function renderModalActions(app) {
+            const wrap = document.getElementById('modalActions');
+            if (app.status === 'pending') {
+                wrap.innerHTML = `
+                    <button type="button" class="auth-button" style="background:var(--success-color); box-shadow:none;" onclick="reviewFromModal('${app.id}','${app.uid || ''}','approved')"><i class="fas fa-check" style="margin-right:6px;"></i>Approve</button>
+                    <button type="button" class="auth-button-secondary" style="border-color:var(--error-color); color:var(--error-color);" onclick="reviewFromModal('${app.id}','${app.uid || ''}','rejected')"><i class="fas fa-xmark" style="margin-right:6px;"></i>Reject</button>`;
+            } else if (app.status === 'approved') {
+                wrap.innerHTML = `<button type="button" class="auth-button-secondary" style="border-color:var(--warning-color); color:var(--warning-color);" onclick="reviewFromModal('${app.id}','${app.uid || ''}','suspended')"><i class="fas fa-ban" style="margin-right:6px;"></i>Suspend this agent</button>`;
+            } else if (app.status === 'suspended') {
+                wrap.innerHTML = `<button type="button" class="auth-button" style="box-shadow:none;" onclick="reviewFromModal('${app.id}','${app.uid || ''}','approved')"><i class="fas fa-rotate-left" style="margin-right:6px;"></i>Reactivate</button>`;
+            } else {
+                wrap.innerHTML = '';
+            }
+        }
 
+        function closeDetail() {
+            document.getElementById('modalRoot').innerHTML = '';
+        }
+
+        /* ---------- Shared review action ---------- */
+
+        function performReview(id, uid, status) {
             const email = document.getElementById('adminEmailLabel').textContent;
-            window.ZibaDB.setApplicationStatus(id, status, email)
-                .then(() => Auth.showToast(status === 'approved' ? 'Applicant approved' : 'Application rejected', 'success'))
+            const labels = { approved: 'Applicant approved', rejected: 'Application rejected', suspended: 'Agent suspended' };
+            return window.ZibaDB.setApplicationStatus(id, uid, status, email)
+                .then(() => Auth.showToast(labels[status] || 'Updated', 'success'))
                 .catch((err) => {
                     console.error('Review failed:', err);
                     Auth.showToast('Could not update — try again', 'error');
-                    card.style.opacity = '1';
-                    card.querySelectorAll('button').forEach(b => b.disabled = false);
+                    throw err;
                 });
-            // The queue re-renders itself automatically via the live listener
-            // once Firestore confirms the status change (the card just
-            // disappears from "pending" on its own).
         }
+
+        function reviewFromCard(id, uid, status, btn) {
+            const card = btn.closest('.app-card');
+            card.style.opacity = '0.5';
+            card.querySelectorAll('button').forEach(b => b.disabled = true);
+            performReview(id, uid, status).catch(() => {
+                card.style.opacity = '1';
+                card.querySelectorAll('button').forEach(b => b.disabled = false);
+            });
+            // The list re-renders itself automatically via the live listener
+            // once Firestore confirms the change — the card just moves to
+            // whichever tab matches its new status.
+        }
+
+        function reviewFromModal(id, uid, status) {
+            document.querySelectorAll('#modalActions button').forEach(b => b.disabled = true);
+            performReview(id, uid, status).then(closeDetail).catch(() => {
+                document.querySelectorAll('#modalActions button').forEach(b => b.disabled = false);
+            });
+        }
+
+        /* ---------- Auth gating ---------- */
 
         function showQueue(user) {
             document.getElementById('loginGate').style.display = 'none';
             document.getElementById('queueShell').style.display = 'block';
             document.getElementById('adminEmailLabel').textContent = user.email;
-
-            if (unsubscribeQueue) unsubscribeQueue();
-            unsubscribeQueue = window.ZibaDB.watchPendingApplications(renderQueue);
+            switchTab('pending');
         }
 
         function showLoginGate() {
             document.getElementById('loginGate').style.display = 'flex';
             document.getElementById('queueShell').style.display = 'none';
+            closeDetail();
             if (unsubscribeQueue) { unsubscribeQueue(); unsubscribeQueue = null; }
         }
 
