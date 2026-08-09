@@ -1,10 +1,13 @@
-
 /* ============================================================
    ZIBA AGENT DASHBOARD — APPLICATION LOGIC
    ============================================================ */
 
 const state = {
     currentPage: 'dashboard',
+    agentUid: null,
+    agentName: 'Agent',
+    agentInitials: 'A',
+    listingsLoaded: false,
     properties: [
         
     ],
@@ -40,20 +43,133 @@ const icons = {
     info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
     x: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
     arrowUp: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>',
-    arrowDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+    arrowDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>',
+    logout: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'
 };
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-document.addEventListener('DOMContentLoaded', () => {
-    init();
-});
-
-function init() {
+// NOTE: initialization no longer runs automatically on DOMContentLoaded.
+// The page's auth-guard script (in dash.html) confirms this visitor is a
+// signed-in, approved agent first, then calls window.ZibaInitDashboard()
+// with their real profile (including uid). This keeps listing data from
+// ever rendering before we actually know who's looking at it.
+window.ZibaInitDashboard = function (agentProfile) {
+    state.agentUid = agentProfile && agentProfile.uid;
+    state.agentName = (agentProfile && agentProfile.fullName) || 'Agent';
+    state.agentInitials = getInitials(state.agentName);
+    renderSidebarIdentity();
     updateBadge();
     renderPage();
     bindEvents();
+
+    // Live-updates whenever a listing is created/edited/deleted anywhere —
+    // by this dashboard or, later, any other client. No manual re-fetching.
+    if (state.agentUid && typeof window.ZibaDB !== 'undefined') {
+        window.ZibaDB.watchAgentListings(state.agentUid, (listings) => {
+            state.properties = listings;
+            state.listingsLoaded = true;
+            updateBadge();
+            renderPage();
+        });
+    }
+};
+
+function getInitials(name) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return 'A';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/* ---------- Property photo compression (same approach as verify-agent's
+   uploads — resized + JPEG-compressed client-side, no Storage needed) ---------- */
+function compressImageToDataURL(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Could not read file'));
+        reader.onload = () => {
+            img.onerror = () => reject(new Error('Could not read image'));
+            img.onload = () => {
+                let { width, height } = img;
+                if (width > maxDim || height > maxDim) {
+                    const scale = maxDim / Math.max(width, height);
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function processPropertyPhoto(file) {
+    let dataUrl = await compressImageToDataURL(file, 1000, 0.72);
+    if (dataUrl.length > 600000) {
+        dataUrl = await compressImageToDataURL(file, 700, 0.55);
+    }
+    return dataUrl;
+}
+
+/* ---------- Photo upload zone wiring (used by both Add and Edit modals) ---------- */
+function initPhotoUploadZone(zoneId, inputId, placeholderId, previewId) {
+    const zone = $(`#${zoneId}`);
+    const input = $(`#${inputId}`);
+    const placeholder = $(`#${placeholderId}`);
+    const preview = $(`#${previewId}`);
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', async () => {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+            const dataUrl = await processPropertyPhoto(file);
+            preview.src = dataUrl;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+            zone.dataset.imageValue = dataUrl;
+        } catch (err) {
+            console.error('Photo processing failed:', err);
+            showToast('Could not process that photo — try a different file', 'error');
+        }
+    });
+}
+
+function resetPhotoUploadZone(zoneId, inputId, placeholderId, previewId, existingImage) {
+    const zone = $(`#${zoneId}`);
+    const input = $(`#${inputId}`);
+    const placeholder = $(`#${placeholderId}`);
+    const preview = $(`#${previewId}`);
+    if (!zone) return;
+
+    input.value = '';
+    if (existingImage) {
+        preview.src = existingImage;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+        zone.dataset.imageValue = existingImage;
+    } else {
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        zone.dataset.imageValue = '';
+    }
+}
+
+function renderSidebarIdentity() {
+    const avatar = $('#sidebarUserAvatar');
+    const name = $('#sidebarUserName');
+    if (avatar) avatar.textContent = state.agentInitials;
+    if (name) name.textContent = state.agentName;
 }
 
 function updateBadge() {
@@ -99,12 +215,13 @@ function renderDashboard(container) {
     const activeListings = state.properties.filter(p => p.status === 'Active').length;
     const totalInquiries = state.properties.reduce((sum, p) => sum + p.inquiries, 0);
     const totalViews = state.properties.reduce((sum, p) => sum + p.views, 0);
+    const firstName = state.agentName.split(' ')[0];
 
     container.innerHTML = `
         <div class="page-header animate-fade-in">
             <div>
-                <h1 class="page-title">Dashboard</h1>
-                <p class="page-subtitle">Welcome back, Tobi. Here is your portfolio overview.</p>
+                <h1 class="page-title">Welcome, ${firstName}</h1>
+                <p class="page-subtitle">Here is your portfolio overview.</p>
             </div>
             <button class="btn btn--primary" id="quickAddBtn">
                 ${icons.plus} Add Property
@@ -147,11 +264,12 @@ function renderDashboard(container) {
                 <div class="table-container">
                     <table class="table">
                         <thead>
-                            <tr><th>Property</th><th>Type</th><th>Price</th><th>Status</th></tr>
+                            <tr><th></th><th>Property</th><th>Type</th><th>Price</th><th>Status</th></tr>
                         </thead>
                         <tbody>
                             ${state.properties.slice(0, 5).map(p => `
                                 <tr>
+                                    <td style="width:56px;">${renderThumb(p)}</td>
                                     <td><strong>${p.title}</strong><br><span style="font-size:12px;color:var(--nutral-gray-color)">${p.location}</span></td>
                                     <td><span class="listing-badge listing-badge--${p.listingType.toLowerCase()}">${p.listingType}</span></td>
                                     <td style="font-weight:600;color:var(--accent-color)">${p.price}</td>
@@ -208,6 +326,7 @@ function renderListings(container) {
                 <table class="table">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Property</th>
                             <th>Type</th>
                             <th>Listing</th>
@@ -219,8 +338,15 @@ function renderListings(container) {
                         </tr>
                     </thead>
                     <tbody>
-                        ${state.properties.length === 0 ? `
-                            <tr><td colspan="8">
+                        ${!state.listingsLoaded ? `
+                            <tr><td colspan="9">
+                                <div class="empty-state">
+                                    <div class="auth-gate__spinner" style="margin: 0 auto;"></div>
+                                    <p class="empty-state__text" style="margin-top:12px;">Loading your listings&hellip;</p>
+                                </div>
+                            </td></tr>
+                        ` : state.properties.length === 0 ? `
+                            <tr><td colspan="9">
                                 <div class="empty-state">
                                     <div class="empty-state__icon">${icons.home}</div>
                                     <h3 class="empty-state__title">No Listings Yet</h3>
@@ -230,6 +356,7 @@ function renderListings(container) {
                             </td></tr>
                         ` : state.properties.map(p => `
                             <tr>
+                                <td style="width:56px;">${renderThumb(p)}</td>
                                 <td>
                                     <strong>${p.title}</strong>
                                     <br><span style="font-size:12px;color:var(--nutral-gray-color)">${p.location}</span>
@@ -264,6 +391,13 @@ function renderListings(container) {
 function renderStatusBadge(status) {
     const slug = status.toLowerCase();
     return `<span class="status-badge status-badge--${slug}">${status}</span>`;
+}
+
+function renderThumb(p) {
+    if (p.image) {
+        return `<img class="listing-thumb" src="${p.image}" alt="${p.title}">`;
+    }
+    return `<div class="listing-thumb listing-thumb--placeholder">${icons.home}</div>`;
 }
 
 function renderAnalytics(container) {
@@ -384,6 +518,7 @@ function renderActivity(container) {
 
 function openAddModal() {
     $('#addPropertyForm').reset();
+    resetPhotoUploadZone('propImageZone', 'propImage', 'propImagePlaceholder', 'propImagePreview', null);
     $('#addPropertyModal').classList.add('active');
 }
 
@@ -398,6 +533,7 @@ function openEditModal(propId) {
     $('#editPropListingType').value = p.listingType;
     $('#editPropStatus').value = p.status;
     $('#editPropDescription').value = p.description;
+    resetPhotoUploadZone('editPropImageZone', 'editPropImage', 'editPropImagePlaceholder', 'editPropImagePreview', p.image || null);
     $('#editPropertyModal').classList.add('active');
 }
 
@@ -406,56 +542,75 @@ function closeModal(modalId) {
 }
 
 function addProperty(data) {
-    const newProp = {
-        id: 'prop-' + Date.now(),
+    if (typeof window.ZibaDB === 'undefined' || !state.agentUid) {
+        showToast('Not connected — try refreshing the page', 'error');
+        return Promise.reject(new Error('not connected'));
+    }
+    return window.ZibaDB.createListing({
         ...data,
-        createdAt: new Date().toISOString().split('T')[0],
-        views: 0,
-        inquiries: 0
-    };
-    state.properties.unshift(newProp);
-    state.activities.unshift({
-        id: Date.now(),
-        type: 'listing',
-        text: `Listed <strong>${data.title}</strong> for ${data.price}`,
-        time: 'Just now',
-        icon: 'home'
+        uid: state.agentUid,
+        agentName: state.agentName
+    }).then(() => {
+        state.activities.unshift({
+            id: Date.now(),
+            type: 'listing',
+            text: `Listed <strong>${data.title}</strong> for ${data.price}`,
+            time: 'Just now',
+            icon: 'home'
+        });
+        showToast('Property listed successfully!', 'success');
+        // The live listener will bring in the new listing and re-render —
+        // no need to touch state.properties here.
+    }).catch((err) => {
+        console.error('Could not create listing:', err);
+        showToast('Could not save the listing — try again', 'error');
+        throw err;
     });
-    showToast('Property listed successfully!', 'success');
-    updateBadge();
-    renderPage();
 }
 
 function updateProperty(id, data) {
-    const idx = state.properties.findIndex(p => p.id === id);
-    if (idx === -1) return;
-    state.properties[idx] = { ...state.properties[idx], ...data };
-    state.activities.unshift({
-        id: Date.now(),
-        type: 'edit',
-        text: `Updated <strong>${data.title}</strong>`,
-        time: 'Just now',
-        icon: 'edit'
+    if (typeof window.ZibaDB === 'undefined') {
+        showToast('Not connected — try refreshing the page', 'error');
+        return Promise.reject(new Error('not connected'));
+    }
+    return window.ZibaDB.updateListing(id, data).then(() => {
+        state.activities.unshift({
+            id: Date.now(),
+            type: 'edit',
+            text: `Updated <strong>${data.title}</strong>`,
+            time: 'Just now',
+            icon: 'edit'
+        });
+        showToast('Property updated successfully!', 'success');
+    }).catch((err) => {
+        console.error('Could not update listing:', err);
+        showToast('Could not save changes — try again', 'error');
+        throw err;
     });
-    showToast('Property updated successfully!', 'success');
-    renderPage();
 }
 
 function deleteProperty(id) {
     const p = state.properties.find(x => x.id === id);
     if (!p) return;
     if (!confirm(`Are you sure you want to delete "${p.title}"?`)) return;
-    state.properties = state.properties.filter(x => x.id !== id);
-    state.activities.unshift({
-        id: Date.now(),
-        type: 'edit',
-        text: `Deleted <strong>${p.title}</strong>`,
-        time: 'Just now',
-        icon: 'trash'
+
+    if (typeof window.ZibaDB === 'undefined') {
+        showToast('Not connected — try refreshing the page', 'error');
+        return;
+    }
+    window.ZibaDB.deleteListing(id).then(() => {
+        state.activities.unshift({
+            id: Date.now(),
+            type: 'edit',
+            text: `Deleted <strong>${p.title}</strong>`,
+            time: 'Just now',
+            icon: 'trash'
+        });
+        showToast('Property deleted', 'info');
+    }).catch((err) => {
+        console.error('Could not delete listing:', err);
+        showToast('Could not delete the listing — try again', 'error');
     });
-    showToast('Property deleted', 'info');
-    updateBadge();
-    renderPage();
 }
 
 function showToast(message, type = 'info') {
@@ -476,6 +631,10 @@ function showToast(message, type = 'info') {
 }
 
 function bindEvents() {
+    // Photo upload zones (Add + Edit modals)
+    initPhotoUploadZone('propImageZone', 'propImage', 'propImagePlaceholder', 'propImagePreview');
+    initPhotoUploadZone('editPropImageZone', 'editPropImage', 'editPropImagePlaceholder', 'editPropImagePreview');
+
     // Sidebar nav clicks
     $$('.nav-item').forEach(el => {
         el.addEventListener('click', () => {
@@ -489,6 +648,17 @@ function bindEvents() {
     });
     $('#sidebarClose').addEventListener('click', () => {
         $('#sidebar').classList.remove('open');
+    });
+
+    // Sign out
+    $('#sidebarSignOut')?.addEventListener('click', () => {
+        if (typeof window.ZibaDB === 'undefined') {
+            window.location.href = '/HTML/login.html';
+            return;
+        }
+        window.ZibaDB.signOutUser().then(() => {
+            window.location.href = '/HTML/login.html';
+        });
     });
 
     // Close modals on overlay click
@@ -514,10 +684,20 @@ function bindEvents() {
             type: $('#propType').value,
             listingType: $('#propListingType').value,
             status: $('#propStatus').value,
-            description: $('#propDescription').value
+            description: $('#propDescription').value,
+            image: $('#propImageZone').dataset.imageValue || null
         };
-        addProperty(data);
-        closeModal('addPropertyModal');
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        addProperty(data)
+            .then(() => closeModal('addPropertyModal'))
+            .catch(() => {}) // error already toasted inside addProperty; keep modal open to retry
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            });
     });
 
     // Edit property form
@@ -531,10 +711,20 @@ function bindEvents() {
             type: $('#editPropType').value,
             listingType: $('#editPropListingType').value,
             status: $('#editPropStatus').value,
-            description: $('#editPropDescription').value
+            description: $('#editPropDescription').value,
+            image: $('#editPropImageZone').dataset.imageValue || null
         };
-        updateProperty(id, data);
-        closeModal('editPropertyModal');
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        updateProperty(id, data)
+            .then(() => closeModal('editPropertyModal'))
+            .catch(() => {}) // error already toasted inside updateProperty; keep modal open to retry
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            });
     });
 
     // Keyboard: Escape to close modals
