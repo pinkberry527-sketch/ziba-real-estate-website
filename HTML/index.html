@@ -135,7 +135,7 @@
               <button>Commercial Property</button>
             </div>
             <div class="filter_item" >
-              <button>View All</button>
+              <button onclick="window.location.href='property.html'">View All</button>
             </div>
           </div>
         </div>
@@ -321,7 +321,7 @@
           <span>FOR PARTNERS</span>
           <h1>Join the Ziba Network</h1>
           <p>Are you a property owner, manager, or developer looking to reach more clients? Partner with Ziba and showcase your properties to our curated community of buyers, renters, and guests.</p>
-          <button> <a href="/HTML/register.html">Become a Partner</a></button>
+          <button> <a href="/HTML/register.html?role=agent">Become a Partner</a></button>
         </div>
       </div>
     </section>
@@ -382,6 +382,7 @@
         </div>
       </div>
     </footer>
+    <script type="module" src="../JS/Firebase-config.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
   AOS.init({
@@ -390,6 +391,6 @@
     mirror: true
   });
 </script>
-    <script src="../javascript/script.js"></script>
+    <script src="../JS/script.js"></script>
   </body>
 </html>

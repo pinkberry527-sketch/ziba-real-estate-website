@@ -73,6 +73,14 @@
                     </svg>
                     <span>Add Property</span>
                 </div>
+                <a href="bulk-upload.html" class="nav-item" style="text-decoration:none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span>Bulk Upload</span>
+                </a>
                 <div class="nav-item" data-page="analytics">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="20" x2="18" y2="10" />
@@ -173,6 +181,7 @@
                         <select class="form-select" id="propType" required>
                             <option value="">Select type</option>
                             <option value="House">House</option>
+                            <option value="Commercial">Land</option>
                             <option value="Apartment">Apartment</option>
                             <option value="Villa">Villa</option>
                             <option value="Condo">Condo</option>
@@ -197,6 +206,34 @@
                             <option value="Pending">Pending</option>
                             <option value="Sold">Sold</option>
                             <option value="Rented">Rented</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propBedrooms">Bedrooms</label>
+                        <input type="number" class="form-input" id="propBedrooms" min="0" placeholder="e.g. 4" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propBathrooms">Bathrooms</label>
+                        <input type="number" class="form-input" id="propBathrooms" min="0" placeholder="e.g. 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propSize">Size (sqm)</label>
+                        <input type="number" class="form-input" id="propSize" min="0" placeholder="e.g. 250" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propFurnished">Furnished</label>
+                        <select class="form-select" id="propFurnished" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="propServiced">Serviced</label>
+                        <select class="form-select" id="propServiced" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
                 </div>
@@ -259,6 +296,7 @@
                         <label class="form-label" for="editPropType">Property Type</label>
                         <select class="form-select" id="editPropType" required>
                             <option value="House">House</option>
+                            <option value="Commercial">Land</option>
                             <option value="Apartment">Apartment</option>
                             <option value="Villa">Villa</option>
                             <option value="Condo">Condo</option>
@@ -281,6 +319,32 @@
                             <option value="Pending">Pending</option>
                             <option value="Sold">Sold</option>
                             <option value="Rented">Rented</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropBedrooms">Bedrooms</label>
+                        <input type="number" class="form-input" id="editPropBedrooms" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropBathrooms">Bathrooms</label>
+                        <input type="number" class="form-input" id="editPropBathrooms" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropSize">Size (sqm)</label>
+                        <input type="number" class="form-input" id="editPropSize" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropFurnished">Furnished</label>
+                        <select class="form-select" id="editPropFurnished" required>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPropServiced">Serviced</label>
+                        <select class="form-select" id="editPropServiced" required>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
                 </div>

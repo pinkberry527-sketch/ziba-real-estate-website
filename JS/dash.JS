@@ -7,6 +7,8 @@ const state = {
     agentUid: null,
     agentName: 'Agent',
     agentInitials: 'A',
+    agentEmail: '',
+    agentPhone: '',
     listingsLoaded: false,
     properties: [
         
@@ -58,6 +60,8 @@ const $$ = (sel) => document.querySelectorAll(sel);
 window.ZibaInitDashboard = function (agentProfile) {
     state.agentUid = agentProfile && agentProfile.uid;
     state.agentName = (agentProfile && agentProfile.fullName) || 'Agent';
+    state.agentEmail = (agentProfile && agentProfile.email) || '';
+    state.agentPhone = (agentProfile && agentProfile.phone) || '';
     state.agentInitials = getInitials(state.agentName);
     renderSidebarIdentity();
     updateBadge();
@@ -532,6 +536,11 @@ function openEditModal(propId) {
     $('#editPropType').value = p.type;
     $('#editPropListingType').value = p.listingType;
     $('#editPropStatus').value = p.status;
+    $('#editPropBedrooms').value = p.bedrooms || 0;
+    $('#editPropBathrooms').value = p.bathrooms || 0;
+    $('#editPropSize').value = p.size || 0;
+    $('#editPropFurnished').value = p.furnished || 'No';
+    $('#editPropServiced').value = p.serviced || 'No';
     $('#editPropDescription').value = p.description;
     resetPhotoUploadZone('editPropImageZone', 'editPropImage', 'editPropImagePlaceholder', 'editPropImagePreview', p.image || null);
     $('#editPropertyModal').classList.add('active');
@@ -549,7 +558,10 @@ function addProperty(data) {
     return window.ZibaDB.createListing({
         ...data,
         uid: state.agentUid,
-        agentName: state.agentName
+        agentName: state.agentName,
+        contactName: state.agentName,
+        contactEmail: state.agentEmail,
+        contactPhone: state.agentPhone
     }).then(() => {
         state.activities.unshift({
             id: Date.now(),
@@ -684,6 +696,11 @@ function bindEvents() {
             type: $('#propType').value,
             listingType: $('#propListingType').value,
             status: $('#propStatus').value,
+            bedrooms: Number($('#propBedrooms').value) || 0,
+            bathrooms: Number($('#propBathrooms').value) || 0,
+            size: Number($('#propSize').value) || 0,
+            furnished: $('#propFurnished').value,
+            serviced: $('#propServiced').value,
             description: $('#propDescription').value,
             image: $('#propImageZone').dataset.imageValue || null
         };
@@ -711,6 +728,11 @@ function bindEvents() {
             type: $('#editPropType').value,
             listingType: $('#editPropListingType').value,
             status: $('#editPropStatus').value,
+            bedrooms: Number($('#editPropBedrooms').value) || 0,
+            bathrooms: Number($('#editPropBathrooms').value) || 0,
+            size: Number($('#editPropSize').value) || 0,
+            furnished: $('#editPropFurnished').value,
+            serviced: $('#editPropServiced').value,
             description: $('#editPropDescription').value,
             image: $('#editPropImageZone').dataset.imageValue || null
         };

@@ -9,14 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/CSS/auth.css">
-    <link rel="icon" type="image/png" href="/assets/logos/favicon.png">
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
     <meta name="robots" content="noindex, nofollow">
 </head>
 <body class="auth-v2-body">
 
-    <a class="brand-mark" href="index.html">
-        <img src="/assets/WhatsApp_Image_2026-04-07_at_18.35.51-removebg-preview.png" alt="Ziba Real Estate">
+    <a class="brand-mark" href="lp.html">
+        <img src="../assets/logo.jpeg" alt="Ziba Real Estate">
         <span>ZIBA</span>
     </a>
 
@@ -62,6 +62,7 @@
             <button type="button" class="admin-tab active" data-tab="pending" onclick="switchTab('pending')">Pending review</button>
             <button type="button" class="admin-tab" data-tab="approved" onclick="switchTab('approved')">Approved agents</button>
             <button type="button" class="admin-tab" data-tab="suspended" onclick="switchTab('suspended')">Suspended</button>
+            <button type="button" class="admin-tab" data-tab="reports" onclick="switchTab('reports')">Reports</button>
         </div>
 
         <div id="queueList"></div>
@@ -74,8 +75,8 @@
     <!-- Detail modal is injected here on click -->
     <div id="modalRoot"></div>
 
-    <script type="module" src="/JS/firebase-config.js"></script>
-    <script src="/JS/auth.js"></script>
+    <script type="module" src="../JS/Firebase-config.js"></script>
+    <script src="../JS/auth.js"></script>
     <script>
         let unsubscribeQueue = null;
         let currentTab = 'pending';
@@ -100,7 +101,8 @@
         const TAB_CONFIG = {
             pending: { emptyText: 'Nothing waiting on review right now.' },
             approved: { emptyText: 'No approved agents yet.' },
-            suspended: { emptyText: 'No suspended agents.' }
+            suspended: { emptyText: 'No suspended agents.' },
+            reports: { emptyText: 'No reports filed.' }
         };
 
         function switchTab(tab) {
@@ -111,7 +113,11 @@
             document.getElementById('queueEmptyText').textContent = TAB_CONFIG[tab].emptyText;
 
             if (unsubscribeQueue) unsubscribeQueue();
-            unsubscribeQueue = window.ZibaDB.watchApplicationsByStatus(tab, renderQueue);
+            if (tab === 'reports') {
+                unsubscribeQueue = window.ZibaDB.watchReports(renderReportsQueue);
+            } else {
+                unsubscribeQueue = window.ZibaDB.watchApplicationsByStatus(tab, renderQueue);
+            }
         }
 
         /* ---------- Card list ---------- */
@@ -183,6 +189,74 @@
             `).join('');
         }
 
+        /* ---------- Reports (buyers flagging a listing/agent) ---------- */
+
+        function reportBadgeFor(report) {
+            const map = {
+                open: '<span class="status-badge" style="background:rgba(245,158,11,0.15); color:var(--warning-color);">Open</span>',
+                resolved: '<span class="status-badge" style="background:rgba(16,185,129,0.15); color:var(--success-color);">Resolved</span>',
+                dismissed: '<span class="status-badge">Dismissed</span>'
+            };
+            return map[report.status] || '';
+        }
+
+        function renderReportsQueue(reports) {
+            currentApps = reports; // reused as the generic "current list" cache
+            const list = document.getElementById('queueList');
+            const empty = document.getElementById('queueEmpty');
+
+            if (!reports.length) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            list.innerHTML = reports.map(r => `
+                <div class="app-card" data-id="${r.id}">
+                    <div class="app-card-header">
+                        <div>
+                            <h3>${escapeHtml(r.agentName || 'Unknown agent')}</h3>
+                            <p>Listing: ${escapeHtml(r.listingTitle || 'Unknown listing')} &middot; Reason: ${escapeHtml(r.reason || '--')}</p>
+                        </div>
+                        ${reportBadgeFor(r)}
+                    </div>
+                    <p class="app-card-bio">${escapeHtml(r.details || 'No further details provided')}</p>
+                    <div class="app-card-meta">
+                        <span>Reported by: ${escapeHtml(r.reporterEmail || '--')}</span>
+                        <span>${escapeHtml(r.createdAtLabel || '')}</span>
+                        ${r.listingId ? `<a href="property_details.html?id=${encodeURIComponent(r.listingId)}" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> View listing</a>` : ''}
+                    </div>
+                    <div class="app-card-actions">
+                        ${r.status === 'open' ? `
+                            <button type="button" class="auth-button" style="background:var(--success-color); box-shadow:none;" onclick="reviewReport('${r.id}','resolved',this)">
+                                <i class="fas fa-check" style="margin-right:6px;"></i>Mark resolved
+                            </button>
+                            <button type="button" class="auth-button-secondary" onclick="reviewReport('${r.id}','dismissed',this)">
+                                <i class="fas fa-xmark" style="margin-right:6px;"></i>Dismiss
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function reviewReport(reportId, status, btn) {
+            const card = btn.closest('.app-card');
+            card.style.opacity = '0.5';
+            card.querySelectorAll('button').forEach(b => b.disabled = true);
+
+            const email = document.getElementById('adminEmailLabel').textContent;
+            window.ZibaDB.setReportStatus(reportId, status, email)
+                .then(() => Auth.showToast(status === 'resolved' ? 'Report marked resolved' : 'Report dismissed', 'success'))
+                .catch((err) => {
+                    console.error('Could not update report:', err);
+                    Auth.showToast('Could not update — try again', 'error');
+                    card.style.opacity = '1';
+                    card.querySelectorAll('button').forEach(b => b.disabled = false);
+                });
+        }
+
         /* ---------- Detail modal ---------- */
 
         function openDetail(appId) {
@@ -210,6 +284,7 @@
                         <p class="auth-subtitle" style="text-align:left; margin-bottom:var(--spacing-xl);">${badgeFor(app)}</p>
 
                         <div class="modal-field"><label>Email</label><p>${escapeHtml(app.email || '--')}</p></div>
+                        <div class="modal-field"><label>Phone</label><p>${escapeHtml(app.phone || '--')}</p></div>
                         <div class="modal-field"><label>Business name</label><p>${escapeHtml(app.businessName || '--')}</p></div>
                         <div class="modal-field"><label>Bio</label><p>${escapeHtml(app.bio || 'Not provided')}</p></div>
                         <div class="modal-field"><label>ID document</label>${docBlock}</div>

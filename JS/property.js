@@ -1,141 +1,53 @@
-const properties = [
-  {
-    id: 'property-1',
-    title: 'Luxury 5-Bedroom Duplex',
-    location: 'V.I, Lagos',
-    price: '#750,000,000',
-    type: 'Duplex',
-    category: 'sales',
-    bedrooms: 5,
-    bathrooms: 6,
-    size: 1075,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realestae1.jpeg',
-    badge: 'NEW',
-    description: 'A premium duplex with private terraces, large living spaces, and elegant finishes. Ideal for family living or investment in Lagos.',
-    longDescription: 'This stunning duplex offers expansive rooms, ample natural light, and polished interiors. Close to major amenities and designed for modern lifestyle comfort without sacrificing luxury.'
-  },
-  {
-    id: 'property-2',
-    title: 'Luxury 4-Bedroom Duplex',
-    location: 'V.I, Lagos',
-    price: '#900,000,000',
-    type: 'house',
-    category: 'sales',
-    bedrooms: 4,
-    bathrooms: 5,
-    size: 1425,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realeaste2.jpg',
-    badge: 'NEW',
-    description: 'A grand 4-bedroom duplex situated in a prime Lagos neighborhood, with generous amenities and luxurious finishes.',
-    longDescription: 'Beautiful design meets comfort in this high-end duplex property. Spacious bedrooms, premium fixtures, and a location that delivers convenience and prestige.'
-  },
-  {
-    id: 'property-3',
-    title: 'Luxury 5-Bedroom Terrace Duplex',
-    location: 'Lekki, Lagos',
-    price: '#350,000,000',
-    type: 'apartment',
-    category: 'lease',
-    bedrooms: 5,
-    bathrooms: 5,
-    size: 175,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realestate3.jpg',
-    badge: 'NEW',
-    description: 'A modern terrace duplex in Lekki designed for comfort and quality living. Excellent for families and long-term ownership.',
-    longDescription: 'Smart layout, beautiful exterior lines, and thoughtful finishes define this terrace duplex. It is a strong value for buyers who want style and functionality.'
-  },
-  {
-    id: 'property-4',
-    title: 'Luxury 4-Bedroom Terrace Duplex',
-    location: 'Lekki, Lagos',
-    price: '#150,000,000',
-    type: 'house',
-    category: 'lease',
-    bedrooms: 4,
-    bathrooms: 5,
-    size: 125,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realeaste4.jpg',
-    badge: 'NEW',
-    description: 'An affordable terrace duplex with high-end exterior finishes and a welcoming, open living layout.',
-    longDescription: 'This property balances quality and value. It offers the kind of design and comfort expected from a modern Lekki residence while remaining grounded in efficiency and practicality.'
-  },
-  {
-    id: 'property-5',
-    title: 'Luxury 4-Bedroom Duplex',
-    location: 'Lekki, Lagos',
-    price: '#180,000,000',
-    type: 'apartment',
-    category: 'sales',
-    bedrooms: 4,
-    bathrooms: 4,
-    size: 175,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realeaste5.jpg',
-    badge: 'NEW',
-    description: 'A premium 4-bedroom duplex with smart living space and a premium Lagos address.',
-    longDescription: 'Clean lines, quality finishes, and a functional design make this property excellent for both families and investors. The layout is bright and easy to maintain.'
-  },
-  {
-    id: 'property-6',
-    title: 'Luxury 4-Bedroom Duplex',
-    location: 'Lekki, Lagos',
-    price: '#150,000,000',
-    type: 'apartment',
-    category: 'lease',
-    bedrooms: 4,
-    bathrooms: 4,
-    size: 175,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/realeastate6.jpeg',
-    badge: 'NEW',
-    description: 'High-quality duplex offering comfortable living areas and a strong location near Lekki amenities.',
-    longDescription: 'A warm and practical property with modern finishes. It suits buyers seeking a solid investment with an attractive, well-balanced floor plan.'
-  },
-  {
-    id: 'property-7',
-    title: 'Luxury 4-Bedroom Duplex',
-    location: 'Lekki, Lagos',
-    price: '#350,000,000',
-    type: 'apartment',
-    category: 'sales',
-    bedrooms: 4,
-    bathrooms: 4,
-    size: 175,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/property 3.jpg',
-    badge: '',
-    description: 'A refined duplex located in Victoria Island with balanced living and entertainment areas.',
-    longDescription: 'This property features a polished layout and premium finishes suitable for a discerning buyer. It presents an attractive residence with strong location value.'
-  },
-  {
-    id: 'property-8',
-    title: 'Luxury 5-Bedroom Duplex',
-    location: 'Lekki, Lagos',
-    price: '#250,000,000',
-    type: 'house',
-    category: 'lease',
-    bedrooms: 5,
-    bathrooms: 6,
-    size: 1275,
-    furnished: 'No',
-    serviced: 'No',
-    image: '../assets/property 2.jpg',
-    badge: 'NEW',
-    description: 'A spacious 5-bedroom duplex with generous room sizes and a commanding Lekki address.',
-    longDescription: 'The strong design, bright interiors, and comfortable layout make this property ideal for larger families or buyers seeking long term value in Lagos.'
-  }
-];
+/* ============================================================
+   ZIBA — property browsing, filtering, wishlist, and details.
+   Now backed by real Firestore listings instead of a static array.
+   ============================================================ */
+
+// Populated live from Firestore — starts empty until the first snapshot
+// arrives, same reactive shape the rest of this file already expects.
+let properties = [];
+
+const NO_PHOTO_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">' +
+  '<rect width="400" height="300" fill="#E5E7EB"/>' +
+  '<path d="M150 190l35-45 25 30 35-50 55 65H150z" fill="#9CA3AF"/>' +
+  '<circle cx="170" cy="110" r="18" fill="#9CA3AF"/>' +
+  '</svg>'
+);
+
+// Maps a raw Firestore listing doc onto the field shape the rest of this
+// file (cards, filters, details page) already expects — keeps everything
+// below unchanged rather than rewriting every render function.
+function mapListingToProperty(listing) {
+  const listingTypeToCategory = { Sale: 'sales', Rent: 'lease' };
+  const createdMs = listing.createdAt && listing.createdAt.toMillis ? listing.createdAt.toMillis() : null;
+  const isRecent = createdMs ? (Date.now() - createdMs) < (14 * 24 * 60 * 60 * 1000) : false;
+
+  return {
+    id: listing.id,
+    title: listing.title || 'Untitled property',
+    location: listing.location || '',
+    price: listing.price || '',
+    type: (listing.type || '').toLowerCase(),
+    category: listingTypeToCategory[listing.listingType] || 'sales',
+    bedrooms: listing.bedrooms || 0,
+    bathrooms: listing.bathrooms || 0,
+    size: listing.size || 0,
+    furnished: listing.furnished || 'No',
+    serviced: listing.serviced || 'No',
+    image: listing.image || NO_PHOTO_SVG,
+    badge: isRecent ? 'NEW' : '',
+    description: listing.description || '',
+    longDescription: listing.description || '',
+    // Passed straight through for the details page's contact/report UI —
+    // not used by the card grid, but kept on the same object rather than
+    // doing a second lookup later.
+    uid: listing.uid || null,
+    contactName: listing.contactName || listing.agentName || 'Listing agent',
+    contactEmail: listing.contactEmail || '',
+    contactPhone: listing.contactPhone || ''
+  };
+}
 
 function getWishlist() {
   try {
@@ -177,9 +89,14 @@ function renderPropertyCards() {
   const list = document.getElementById('propertyList');
   if (!list) return;
 
+  if (!properties.length) {
+    list.innerHTML = `<p class="no-results" style="padding:40px 0;text-align:center;color:#6B7280;">No properties listed yet — check back soon.</p>`;
+    return;
+  }
+
   list.innerHTML = properties.map((property) => {
     return `
-      <div class="card" data-id="${property.id}" data-location="${property.location}" data-category="${property.category}" data-type="${property.type}" data-bedrooms="${property.bedrooms}" data-bathrooms="${property.bathrooms}" data-size="${property.size}" data-price="${Number(property.price.replace(/[^0-9]/g, ''))}" data-furnished="${property.furnished.toLowerCase()}" data-serviced="${property.serviced.toLowerCase()}">
+      <div class="card" data-id="${property.id}" data-location="${property.location}" data-category="${property.category}" data-type="${property.type}" data-bedrooms="${property.bedrooms}" data-bathrooms="${property.bathrooms}" data-size="${property.size}" data-price="${Number(String(property.price).replace(/[^0-9]/g, ''))}" data-furnished="${property.furnished.toLowerCase()}" data-serviced="${property.serviced.toLowerCase()}">
         <div class="card-image">
           <img src="${property.image}" alt="${property.title}">
           <div class="card-badges">
@@ -247,7 +164,7 @@ function renderWishlistSummary() {
           <img src="${property.image}" alt="${property.title}">
           <div class="wishlist-item-info">
             <a class="wishlist-item-title" href="property-details.html?id=${property.id}">${property.title}</a>
-            <span class="wishlist-item-location">${property.location}</span>
+            <span class="wishlist-item-location">${propert.location}</span>
             <span class="wishlist-item-price">${property.price}</span>
           </div>
         </div>
@@ -329,7 +246,7 @@ let resultCount = 0;
     const locationMatches = locationValue ? cardLocation.includes(locationValue) : true;
     const categoryMatches = categoryValue ? cardCategory.includes(categoryValue) : true;
     const typeMatches = typeValue ? cardType.includes(typeValue) : true;
-    const bedroomMatches = bedroomValue ? cardBedrooms === bedroomValue : true;
+    const bedroomMatches = bedroomValue ? Number(cardBedrooms) >= Number(bedroomValue) : true;
     const minPriceMatches = minPriceValue ? cardPrice >= Number(minPriceValue) : true;
     const maxPriceMatches = maxPriceValue ? cardPrice <= Number(maxPriceValue) : true;
     const furnishedMatches = furnishedValue ? cardFurnished === furnishedValue : true;
@@ -361,40 +278,158 @@ let resultCount = 0;
   });
 }
 
+/* ---------- Property details page: fetched fresh, not from the shared
+   array — a one-time read is simpler and faster than waiting on a live
+   collection sync for a page that only needs one document. ---------- */
 function renderPropertyDetails() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
+  const container = document.getElementById('propertyDetails');
   if (!id) return;
 
-  const property = properties.find((item) => item.id === id);
-  if (!property) {
-    document.getElementById('propertyDetails').innerHTML = '<div><p>Property not found. Please return to the listings.</p></div>';
+  if (typeof window.ZibaDB === 'undefined') {
+    if (container) container.innerHTML = '<p>Could not connect — please refresh the page.</p>';
     return;
   }
 
-  document.getElementById('detailImage').src = property.image;
-  document.getElementById('detailTitle').textContent = property.title;
-  document.getElementById('detailLocation').textContent = property.location;
-  document.getElementById('detailPrice').textContent = property.price;
-  document.getElementById('detailDescription').textContent = property.description;
-  document.getElementById('detailLongDescription').textContent = property.longDescription;
-  document.getElementById('detailBedrooms').textContent = property.bedrooms;
-  document.getElementById('detailBathrooms').textContent = property.bathrooms;
-  document.getElementById('detailSize').textContent = `${property.size} sqm`;
-  document.getElementById('detailType').textContent = property.type;
-  document.getElementById('detailBadge').textContent = property.badge;
+  window.ZibaDB.getListing(id).then((listing) => {
+    if (!listing) {
+      if (container) container.innerHTML = '<p>Property not found. Please return to the listings.</p>';
+      return;
+    }
 
-  const detailWishlistBtn = document.getElementById('detailWishlistBtn');
-  if (detailWishlistBtn) {
-    detailWishlistBtn.dataset.id = property.id;
-    detailWishlistBtn.classList.toggle('active', isInWishlist(property.id));
-    detailWishlistBtn.innerHTML = isInWishlist(property.id) ? '<i class="fa fa-heart"></i> Saved' : '<i class="fa fa-heart"></i> Add to wishlist';
-    detailWishlistBtn.addEventListener('click', () => {
-      toggleWishlist(property.id);
+    const property = mapListingToProperty(listing);
+
+    document.getElementById('detailImage').src = property.image;
+    document.getElementById('detailTitle').textContent = property.title;
+    document.getElementById('detailLocation').textContent = property.location;
+    document.getElementById('detailPrice').textContent = property.price;
+    document.getElementById('detailDescription').textContent = property.description;
+    document.getElementById('detailLongDescription').textContent = property.longDescription;
+    document.getElementById('detailBedrooms').textContent = property.bedrooms;
+    document.getElementById('detailBathrooms').textContent = property.bathrooms;
+    document.getElementById('detailSize').textContent = `${property.size} sqm`;
+    document.getElementById('detailType').textContent = property.type;
+    document.getElementById('detailBadge').textContent = property.badge;
+
+    const detailWishlistBtn = document.getElementById('detailWishlistBtn');
+    if (detailWishlistBtn) {
+      detailWishlistBtn.dataset.id = property.id;
       detailWishlistBtn.classList.toggle('active', isInWishlist(property.id));
       detailWishlistBtn.innerHTML = isInWishlist(property.id) ? '<i class="fa fa-heart"></i> Saved' : '<i class="fa fa-heart"></i> Add to wishlist';
-    });
+      detailWishlistBtn.addEventListener('click', () => {
+        toggleWishlist(property.id);
+        detailWishlistBtn.classList.toggle('active', isInWishlist(property.id));
+        detailWishlistBtn.innerHTML = isInWishlist(property.id) ? '<i class="fa fa-heart"></i> Saved' : '<i class="fa fa-heart"></i> Add to wishlist';
+      });
+    }
+
+    renderAgentContact(property);
+    window.ZibaDB.incrementListingViews(id); // best-effort, not awaited
+  }).catch((err) => {
+    console.error('Could not load property:', err);
+    if (container) container.innerHTML = '<p>Something went wrong loading this property. Please try again.</p>';
+  });
+}
+
+/* ---------- Agent contact card + report-agent modal (property_details.html) ---------- */
+
+function renderAgentContact(property) {
+  const wrap = document.getElementById('agentContactCard');
+  if (!wrap) return; // page doesn't have this section — nothing to do
+
+  const emailLink = property.contactEmail
+    ? `<a href="mailto:${property.contactEmail}"><i class="fa fa-envelope"></i> ${property.contactEmail}</a>`
+    : '<span class="agent-contact-missing">Email not provided</span>';
+  const phoneLink = property.contactPhone
+    ? `<a href="tel:${property.contactPhone}"><i class="fa fa-phone"></i> ${property.contactPhone}</a>`
+    : '<span class="agent-contact-missing">Phone not provided</span>';
+
+  wrap.innerHTML = `
+    <h3>Listed by</h3>
+    <p class="agent-contact-name">${property.contactName}</p>
+    <div class="agent-contact-links">
+      ${emailLink}
+      ${phoneLink}
+    </div>
+    <button type="button" class="report-agent-btn" id="reportAgentBtn">
+      <i class="fa fa-flag"></i> Report this listing
+    </button>
+  `;
+
+  document.getElementById('reportAgentBtn')?.addEventListener('click', () => openReportModal(property));
+}
+
+function openReportModal(property) {
+  if (typeof window.ZibaDB === 'undefined') return;
+
+  const user = window.ZibaDB.getCurrentUser();
+  if (!user) {
+    alert('Please sign in to report a listing.');
+    window.location.href = 'login.html';
+    return;
   }
+
+  const existing = document.getElementById('reportModalOverlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'reportModalOverlay';
+  overlay.className = 'report-modal-overlay';
+  overlay.innerHTML = `
+    <div class="report-modal">
+      <button type="button" class="report-modal-close" id="reportModalClose" aria-label="Close">&times;</button>
+      <h3>Report this listing</h3>
+      <p>Let us know if something looks wrong — our team reviews every report.</p>
+      <form id="reportForm">
+        <label for="reportReason">Reason</label>
+        <select id="reportReason" required>
+          <option value="">Select a reason</option>
+          <option value="Fraud or scam">Fraud or scam</option>
+          <option value="Misleading listing">Misleading listing</option>
+          <option value="Inappropriate content">Inappropriate content</option>
+          <option value="Agent unresponsive or unprofessional">Agent unresponsive or unprofessional</option>
+          <option value="Other">Other</option>
+        </select>
+        <label for="reportDetails">Details</label>
+        <textarea id="reportDetails" rows="4" placeholder="Tell us more (optional)"></textarea>
+        <button type="submit" class="report-submit-btn">Submit report</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('reportModalClose').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+  document.getElementById('reportForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const reason = document.getElementById('reportReason').value;
+    const details = document.getElementById('reportDetails').value.trim();
+    const btn = e.target.querySelector('.report-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    window.ZibaDB.submitReport({
+      listingId: property.id,
+      listingTitle: property.title,
+      agentUid: property.uid,
+      agentName: property.contactName,
+      reporterUid: user.uid,
+      reporterEmail: user.email,
+      reason,
+      details: details || 'No further details provided',
+      createdAtLabel: new Date().toLocaleString()
+    }).then(() => {
+      overlay.innerHTML = `<div class="report-modal"><p>Thanks — our team will look into this.</p></div>`;
+      setTimeout(() => overlay.remove(), 1800);
+    }).catch((err) => {
+      console.error('Could not submit report:', err);
+      btn.disabled = false;
+      btn.textContent = 'Submit report';
+      alert('Could not submit your report — please try again.');
+    });
+  });
 }
 
 function attachMobileNavToggle() {
@@ -420,13 +455,28 @@ function initSlider() {
   }, 5000);
 }
 
+function waitForZibaDB(callback) {
+  if (typeof window.ZibaDB !== 'undefined') { callback(); return; }
+  const check = setInterval(() => {
+    if (typeof window.ZibaDB === 'undefined') return;
+    clearInterval(check);
+    callback();
+  }, 100);
+}
+
 function initializePage() {
   updateWishlistCount();
   initSlider();
 
   if (document.getElementById('propertyList')) {
-    renderPropertyCards();
-    
+    waitForZibaDB(() => {
+      window.ZibaDB.watchActiveListings((listings) => {
+        properties = listings.map(mapListingToProperty);
+        renderPropertyCards();
+        filterProperties();
+      });
+    });
+
     // Pre-fill search inputs from URL parameters if present
     const params = new URLSearchParams(window.location.search);
     if (params.has('location')) {
@@ -446,13 +496,10 @@ function initializePage() {
     if (searchForm) {
       searchForm.addEventListener('submit', filterProperties);
     }
-    
-    // Trigger filter on load to apply any pre-filled values
-    filterProperties();
   }
 
-  if (window.location.pathname.endsWith('property-details.html')) {
-    renderPropertyDetails();
+  if (document.getElementById('propertyDetails')) {
+    waitForZibaDB(renderPropertyDetails);
   }
 
   const wishlistSummaryBtn = document.querySelector('.wishlist-summary-btn');

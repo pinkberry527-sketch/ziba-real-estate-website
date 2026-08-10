@@ -523,6 +523,7 @@ const Auth = (() => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const businessName = document.getElementById('businessName');
+            const phone = document.getElementById('phone');
             const bio = document.getElementById('bio');
             let valid = true;
 
@@ -530,6 +531,11 @@ const Auth = (() => {
                 setFieldError(businessName, 'Business name is required');
                 valid = false;
             } else clearFieldError(businessName);
+
+            if (!phone.value.trim()) {
+                setFieldError(phone, 'Phone number is required so buyers can reach you');
+                valid = false;
+            } else clearFieldError(phone);
 
             if (!valid) return;
 
@@ -566,6 +572,7 @@ const Auth = (() => {
                             fullName: (profile && profile.fullName) || 'Unknown applicant',
                             email: currentUser.email,
                             businessName: businessName.value.trim(),
+                            phone: phone.value.trim(),
                             bio: bio.value.trim() || 'Not provided',
                             referenceId: refId,
                             submittedAt: new Date().toLocaleString(),

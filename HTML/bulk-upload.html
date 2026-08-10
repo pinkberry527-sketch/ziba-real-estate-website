@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Upload | Ziba Real Estate</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CSS/dash.css">
+</head>
+<body class="auth-v2-body" style="align-items:flex-start;">
+
+    <!-- Shown until Firebase confirms this visitor is a signed-in, approved agent -->
+    <div class="auth-container" id="checkingGate" style="min-height: auto; padding: 60px 0 0;">
+        <div class="auth-card" style="max-width: 420px; text-align:center;">
+            <div class="status-icon" style="margin: 0 auto var(--spacing-lg);"><i class="fas fa-spinner fa-spin"></i></div>
+            <p class="auth-subtitle" style="margin-bottom:0;">Checking your account…</p>
+        </div>
+    </div>
+
+    <div class="admin-shell" id="uploadShell" style="display:none; padding-top: 32px;">
+        <div class="admin-header">
+            <div>
+                <h2 class="auth-title" style="text-align:left; margin-bottom:4px;">Bulk upload properties</h2>
+                <p class="auth-subtitle" style="text-align:left; margin-bottom:0;">
+                    Uploading as <strong id="agentNameLabel"></strong> — every listing below will be created under your account.
+                </p>
+            </div>
+            <a href="dash.html" class="auth-button-secondary" style="width:auto; padding: 10px 20px; text-decoration:none; display:inline-flex; align-items:center;">
+                <i class="fas fa-arrow-left" style="margin-right:8px;"></i>Back to dashboard
+            </a>
+        </div>
+
+        <div class="app-card">
+            <div class="app-card-header">
+                <div>
+                    <h3>1. Prepare your CSV</h3>
+                    <p>One row per property. First row must be this exact header.</p>
+                </div>
+            </div>
+            <div class="app-card-bio" style="font-family: monospace; font-size: 12px; overflow-x: auto; white-space: pre;">title,price,location,type,listingType,status,bedrooms,bathrooms,size,furnished,serviced,description</div>
+            <p style="font-size: 13px; color: var(--muted-text-color); margin-top: 8px;">
+                <strong>type</strong>: House, Apartment, Villa, Condo, Townhouse, Penthouse, Land, or Commercial &middot;
+                <strong>listingType</strong>: Sale or Rent &middot;
+                <strong>status</strong>: Active, Pending, Sold, or Rented &middot;
+                <strong>furnished</strong> / <strong>serviced</strong>: Yes or No.
+                Wrap any field containing a comma in double quotes.
+                Photos aren't supported here — bulk-uploaded listings show a placeholder image until edited individually on the dashboard.
+            </p>
+            <button type="button" class="auth-button-secondary" id="downloadTemplateBtn" style="width:auto; padding: 10px 20px; margin-top: 12px;">
+                <i class="fas fa-download" style="margin-right:8px;"></i>Download example CSV
+            </button>
+        </div>
+
+        <div class="app-card">
+            <div class="app-card-header">
+                <div><h3>2. Paste or upload</h3></div>
+            </div>
+            <textarea id="csvInput" class="form-textarea" rows="10" style="font-family: monospace; font-size: 13px;"
+                placeholder="Paste your CSV here, including the header row..."></textarea>
+            <div style="display:flex; align-items:center; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+                <label class="auth-button-secondary" style="width:auto; padding: 10px 20px; cursor: pointer; display:inline-flex; align-items:center;">
+                    <i class="fas fa-file-arrow-up" style="margin-right:8px;"></i>Upload .csv file
+                    <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;">
+                </label>
+                <span id="parsedCount" style="font-size: 13px; color: var(--muted-text-color);"></span>
+            </div>
+        </div>
+
+        <div class="app-card">
+            <div class="app-card-header">
+                <div><h3>3. Upload</h3></div>
+            </div>
+            <button type="button" class="auth-button" id="startUploadBtn" style="width:auto; padding: 12px 28px;">
+                <span>Create listings</span>
+            </button>
+            <div id="uploadResults" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/JS/Firebase-config.js"></script>
+    <script src="/JS/auth.js"></script>
+    <script>
+        let currentAgent = null; // { uid, fullName, email, phone }
+        let parsedRows = [];
+
+        /* ---------- Minimal CSV parser (handles quoted fields, escaped "" , commas inside quotes) ---------- */
+        function parseCsv(text) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const next = text[i + 1];
+
+                if (inQuotes) {
+                    if (char === '"' && next === '"') { field += '"'; i++; }
+                    else if (char === '"') { inQuotes = false; }
+                    else { field += char; }
+                } else {
+                    if (char === '"') { inQuotes = true; }
+                    else if (char === ',') { row.push(field); field = ''; }
+                    else if (char === '\n' || char === '\r') {
+                        if (char === '\r' && next === '\n') i++;
+                        row.push(field); field = '';
+                        if (row.some(f => f.trim() !== '')) rows.push(row);
+                        row = [];
+                    } else { field += char; }
+                }
+            }
+            if (field !== '' || row.length) { row.push(field); rows.push(row); }
+            return rows;
+        }
+
+        const REQUIRED_HEADERS = ['title','price','location','type','listingType','status','bedrooms','bathrooms','size','furnished','serviced','description'];
+
+        function rowsToListings(rows) {
+            if (!rows.length) return { listings: [], error: 'No rows found.' };
+            const header = rows[0].map(h => h.trim());
+            const missing = REQUIRED_HEADERS.filter(h => !header.includes(h));
+            if (missing.length) {
+                return { listings: [], error: `Missing column(s): ${missing.join(', ')}` };
+            }
+
+            const listings = rows.slice(1).map((row) => {
+                const obj = {};
+                header.forEach((h, idx) => { obj[h] = (row[idx] || '').trim(); });
+                return {
+                    title: obj.title,
+                    price: obj.price,
+                    location: obj.location,
+                    type: obj.type,
+                    listingType: obj.listingType,
+                    status: obj.status || 'Active',
+                    bedrooms: Number(obj.bedrooms) || 0,
+                    bathrooms: Number(obj.bathrooms) || 0,
+                    size: Number(obj.size) || 0,
+                    furnished: obj.furnished || 'No',
+                    serviced: obj.serviced || 'No',
+                    description: obj.description,
+                    image: null
+                };
+            }).filter(l => l.title); // skip fully blank rows
+
+            return { listings, error: null };
+        }
+
+        function updateParsedPreview() {
+            const text = document.getElementById('csvInput').value;
+            if (!text.trim()) {
+                document.getElementById('parsedCount').textContent = '';
+                parsedRows = [];
+                return;
+            }
+            const { listings, error } = rowsToListings(parseCsv(text));
+            if (error) {
+                document.getElementById('parsedCount').innerHTML = `<span style="color:var(--error-color)"><i class="fas fa-circle-exclamation"></i> ${error}</span>`;
+                parsedRows = [];
+                return;
+            }
+            parsedRows = listings;
+            document.getElementById('parsedCount').innerHTML = `<span style="color:var(--success-color)"><i class="fas fa-circle-check"></i> ${listings.length} propert${listings.length === 1 ? 'y' : 'ies'} ready to upload</span>`;
+        }
+
+        document.getElementById('csvInput').addEventListener('input', updateParsedPreview);
+
+        document.getElementById('csvFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                document.getElementById('csvInput').value = reader.result;
+                updateParsedPreview();
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById('downloadTemplateBtn').addEventListener('click', () => {
+            const template = 'title,price,location,type,listingType,status,bedrooms,bathrooms,size,furnished,serviced,description\n' +
+                '"4 Bedroom Duplex","₦450,000,000","Ikoyi, Lagos",House,Sale,Active,4,5,350,Yes,No,"A modern duplex with private pool and staff quarters."\n' +
+                '"2 Bedroom Apartment","₦2,500,000/year","Lekki Phase 1, Lagos",Apartment,Rent,Active,2,2,110,No,Yes,"Serviced apartment in a gated estate."';
+            const blob = new Blob([template], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ziba-listings-template.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('startUploadBtn').addEventListener('click', async () => {
+            updateParsedPreview();
+            if (!parsedRows.length) {
+                Auth.showToast('Paste or upload a valid CSV first', 'error');
+                return;
+            }
+            if (!currentAgent) {
+                Auth.showToast('Not signed in — refresh and try again', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('startUploadBtn');
+            const resultsEl = document.getElementById('uploadResults');
+            btn.disabled = true;
+            btn.querySelector('span').textContent = 'Uploading…';
+            resultsEl.innerHTML = '';
+
+            let successCount = 0;
+            let failCount = 0;
+
+            for (const listing of parsedRows) {
+                const row = document.createElement('div');
+                row.className = 'app-card-meta';
+                row.style.marginBottom = '6px';
+                row.innerHTML = `<span><i class="fas fa-spinner fa-spin"></i> ${listing.title}</span>`;
+                resultsEl.appendChild(row);
+
+                try {
+                    await window.ZibaDB.createListing({
+                        ...listing,
+                        uid: currentAgent.uid,
+                        agentName: currentAgent.fullName,
+                        contactName: currentAgent.fullName,
+                        contactEmail: currentAgent.email,
+                        contactPhone: currentAgent.phone
+                    });
+                    row.innerHTML = `<span style="color:var(--success-color)"><i class="fas fa-circle-check"></i> ${listing.title}</span>`;
+                    successCount++;
+                } catch (err) {
+                    console.error('Upload failed for', listing.title, err);
+                    row.innerHTML = `<span style="color:var(--error-color)"><i class="fas fa-circle-exclamation"></i> ${listing.title} — failed</span>`;
+                    failCount++;
+                }
+            }
+
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'Create listings';
+            Auth.showToast(`${successCount} uploaded${failCount ? `, ${failCount} failed` : ''}`, failCount ? 'error' : 'success');
+        });
+
+        /* ---------- Auth guard (same pattern as dash.html) ---------- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const waitForDb = setInterval(() => {
+                if (typeof window.ZibaDB === 'undefined') return;
+                clearInterval(waitForDb);
+
+                window.ZibaDB.watchAuthState((user) => {
+                    if (!user) { window.location.href = 'login.html'; return; }
+
+                    window.ZibaDB.getUserProfile(user.uid).then((profile) => {
+                        if (!profile || profile.role !== 'agent') {
+                            window.location.href = 'index.html';
+                        } else if (profile.agentStatus !== 'approved') {
+                            window.location.href = 'pending.html';
+                        } else {
+                            currentAgent = {
+                                uid: user.uid,
+                                fullName: profile.fullName || 'Agent',
+                                email: user.email,
+                                phone: profile.phone || ''
+                            };
+                            document.getElementById('agentNameLabel').textContent = currentAgent.fullName;
+                            document.getElementById('checkingGate').style.display = 'none';
+                            document.getElementById('uploadShell').style.display = 'block';
+                        }
+                    });
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
