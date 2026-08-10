@@ -40,121 +40,53 @@ if (statSection) {
 
   observer.observe(statSection);
 }
-const propertyList = [
-  {
-    property: "4 Bedroom Duplex",
-    location: "Ikoyi",
-    price: "$500,000",
-    Type: "House",
-    category: "Sales",
-    image: "../assets/property 1.jpg",
-  },
-  {
-    property: "5 Bedroom Duplex",
-    location: "Lekki",
-    price: "$250,000",
-    Type: "House",
-    category: "Sales",
-    image: "../assets/property 2.jpg",
-  },
-  {
-    property: "3 Bedroom Duplex",
-    location: "Banana Island",
-    price: "$1,200,000",
-    Type: "House",
-    category: "Sales",
-    image: "../assets/property 3.jpg",
-  },
-  {
-    property: "100 by 100 plot of land",
-    location: "Ibeju-Lekki",
-    price: "$150,000",
-    Type: "Land",
-    category: "Sales",
-    image: "../assets/land1.jpg",
-  },
-  {
-    property: "100 by 100 plot of land",
-    location: "Epe",
-    price: "$100,000",
-    Type: "Land",
-    category: "Sales",
-    image: "../assets/land 2.jpg",
-  },
-  {
-    property: "50 by 100 plot of land",
-    location: "Epe",
-    price: "$80,000",
-    Type: "Land",
-    category: "Sales",
-    image: "../assets/land 3.jpg",
-  },
-  {
-    property: "4 Bedroom Apartment",
-    location: "Ikoyi",
-    price: "$500,000",
-    Type: "Apartment",
-    category: "Sales",
-    image: "../assets/app 1.jpg",
-  },
-  {
-    property: "4 Bedroom Apartment",
-    location: "Ikoyi",
-    price: "$500,000",
-    Type: "Apartment",
-    category: "Sales",
-    image: "../assets/app 2.jpg",
-  },
-  {
-    property: "4 Bedroom Apartment",
-    location: "Ikoyi",
-    price: "$500,000",
-    Type: "Apartment",
-    category: "Sales",
-    image: "../assets/app 3.jpg",
-  },
-  {
-    property: "office space",
-    location: "Victoria Island",
-    price: "$500,000",
-    Type: "Commercial Property",
-    category: "Sales",
-    image: "../assets/cp1.jpg",
-  },
-  {
-    property: "office space",
-    location: "Victoria Island",
-    price: "$500,000",
-    Type: "Commercial Property",
-    category: "Sales",
-    image: "../assets/cp 2.jpg",
-  },
-  {
-    property: "office space",
-    location: "Victoria Island",
-    price: "$500,000",
-    Type: "Commercial Property",
-    category: "Sales",
-    image: "../assets/cp 3.jpg",
-  },
-];
+// Populated live from Firestore's real listings — replaces the old
+// hardcoded sample array. Shows the newest active listings first.
+let propertyList = [];
+
 const featuredList = document.getElementById("featured_list");
 const filterItems = document.querySelectorAll(".filter_item[data-type]");
 
+const NO_PHOTO_SVG_FEATURED = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">' +
+  '<rect width="400" height="300" fill="#E5E7EB"/>' +
+  '<path d="M150 190l35-45 25 30 35-50 55 65H150z" fill="#9CA3AF"/>' +
+  '<circle cx="170" cy="110" r="18" fill="#9CA3AF"/>' +
+  '</svg>'
+);
+
+function mapListingToFeatured(listing) {
+  return {
+    id: listing.id,
+    property: listing.title || 'Untitled property',
+    location: listing.location || '',
+    price: listing.price || '',
+    Type: listing.type || '',
+    category: listing.listingType === 'Rent' ? 'Leasing' : 'Sales',
+    image: listing.image || NO_PHOTO_SVG_FEATURED,
+  };
+}
+
 const renderProperties = (properties) => {
   if (!featuredList) return;
+
+  if (!properties.length) {
+    featuredList.innerHTML = `<p style="padding:24px;color:#6B7280;">No properties listed yet — check back soon.</p>`;
+    return;
+  }
+
   featuredList.innerHTML = "";
   properties.forEach((property) => {
     featuredList.innerHTML += `
     <div class="list_item">
-      <i class="fa-regular fa-heart favorite_icon"></i>
-      <img src="${property.image}" alt="" />
+      <i class="fa-regular fa-heart favorite_icon" data-id="${property.id}"></i>
+      <img src="${property.image}" alt="${property.property}" />
       <div class="list_item_content">
         <h3>${property.property}</h3>
         <p>${property.location}</p>
         <p>${property.price}</p>
         <div class="list_item_content_footer">
-          <button>View Details</button>
+          <a href="property-details.html?id=${property.id}"><button type="button">View Details</button></a>
         </div>
       </div>
     </div>
@@ -162,37 +94,69 @@ const renderProperties = (properties) => {
   });
 };
 
-// Toggle favorite icon via event delegation
+// Toggle favorite icon via event delegation — also keeps the shared
+// wishlist (used on property.html / property_details.html) in sync, since
+// both surfaces read from the same 'zibaWishlist' localStorage key.
 if (featuredList) {
   featuredList.addEventListener("click", (e) => {
     if (e.target.classList.contains("favorite_icon")) {
       e.target.classList.toggle("fa-regular");
       e.target.classList.toggle("fa-solid");
       e.target.classList.toggle("filled");
+
+      const id = e.target.dataset.id;
+      if (id) {
+        try {
+          const list = JSON.parse(localStorage.getItem('zibaWishlist') || '[]');
+          const idx = list.indexOf(id);
+          if (idx === -1) list.push(id); else list.splice(idx, 1);
+          localStorage.setItem('zibaWishlist', JSON.stringify(list));
+        } catch { /* ignore — wishlist sync is a nice-to-have, not critical */ }
+      }
     }
   });
 }
 
-// Initial render of all properties
-renderProperties(propertyList);
+function waitForZibaDBFeatured(callback) {
+  if (typeof window.ZibaDB !== 'undefined') { callback(); return; }
+  const check = setInterval(() => {
+    if (typeof window.ZibaDB === 'undefined') return;
+    clearInterval(check);
+    callback();
+  }, 100);
+}
+
+if (featuredList) {
+  waitForZibaDBFeatured(() => {
+    window.ZibaDB.watchActiveListings((listings) => {
+      propertyList = listings.slice(0, 12).map(mapListingToFeatured);
+      const activeFilter = document.querySelector('.filter_item.active');
+      const activeType = activeFilter ? activeFilter.getAttribute('data-type') : 'All';
+      applyFeaturedFilter(activeType);
+    });
+  });
+}
+
+function applyFeaturedFilter(type) {
+  if (!type || type === 'All') {
+    renderProperties(propertyList);
+  } else {
+    // Substring, case-insensitive match — real listings use whatever type
+    // vocabulary the agent picked (House/Apartment/Villa/Land/Commercial/
+    // etc.), so this stays robust without needing the two vocabularies to
+    // match exactly.
+    const needle = type.toLowerCase();
+    renderProperties(propertyList.filter((property) =>
+      (property.Type || '').toLowerCase().includes(needle) || needle.includes((property.Type || '').toLowerCase())
+    ));
+  }
+}
 
 filterItems.forEach((item) => {
   item.addEventListener("click", () => {
     filterItems.forEach((i) => i.classList.remove("active"));
     item.classList.add("active");
-
-    const type = item.getAttribute("data-type");
-    let filteredProperties;
-
-    if (type === "All" || !type) {
-      filteredProperties = propertyList;
-    } else {
-      filteredProperties = propertyList.filter(
-        (property) => property.Type === type,
-      );
-    }
-
-    renderProperties(filteredProperties);
+    applyFeaturedFilter(item.getAttribute("data-type"));
   });
 });
 
@@ -258,8 +222,8 @@ const agentList = [
     rating: 4.5,
   },
   {
-    agent_name: "Tayo",
-    company_name: "Tayo Real Estate",
+    agent_name: "Femi",
+    company_name: "Femi Real Estate",
     image: "../assets/agent3.jpg",
     verified: true,
     phone: "08012345678",

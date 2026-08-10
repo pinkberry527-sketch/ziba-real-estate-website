@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/CSS/auth.css">
+    <link rel="stylesheet" href="../CSS/auth.css">
     <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
 </head>
 <body class="auth-v2-body">
 
-    <a class="brand-mark" href="index.html">
-        <img src="/assets/WhatsApp_Image_2026-04-07_at_18.35.51-removebg-preview.png" alt="Ziba Real Estate">
+    <a class="brand-mark" href="lp.html">
+        <img src="../assets/logo.jpeg" alt="Ziba Real Estate">
         <span>ZIBA</span>
     </a>
 
@@ -70,6 +70,18 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="phone" class="form-label">Phone number</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="tel" id="phone" name="phone" class="form-input"
+                                   placeholder="+234 800 000 0000" autocomplete="tel" required>
+                        </div>
+                        <p style="font-size:12px;color:var(--muted-text-color);margin-top:4px;">
+                            Shown to buyers so they can reach you directly about your listings.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">ID verification document</label>
                         <div class="upload-zone" data-upload-type="document">
                             <input type="file" id="idDocument" name="idDocument" class="upload-input" accept=".pdf,.jpg,.jpeg,.png">
@@ -94,7 +106,7 @@
 
                 <div class="auth-footer">
                     <p class="auth-footer-text">
-                        <a href="/HTML/login.html" class="auth-link"><i class="fas fa-arrow-left" style="margin-right: 6px;"></i>Back to sign up</a>
+                        <a href="login.html" class="auth-link"><i class="fas fa-arrow-left" style="margin-right: 6px;"></i>Back to sign up</a>
                     </p>
                 </div>
             </div>
@@ -104,8 +116,8 @@
 
     <!-- EmailJS: sends the review notification to both reviewer addresses
          configured at the top of auth.js -->
-    <script type="module" src="/JS/firebase-config.js"></script>
+    <script type="module" src="../JS/Firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="/JS/auth.js"></script>
+    <script src="../JS/auth.js"></script>
 </body>
 </html>

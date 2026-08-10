@@ -4,23 +4,32 @@
 
 const state = {
     currentPage: 'dashboard',
-    properties: (typeof properties !== 'undefined' ? properties : []).map(p => ({
-        id: p.id,
-        title: p.title,
-        location: p.location,
-        price: p.price,
-        type: p.type,
-        listingType: p.category.toLowerCase() === 'sales' ? 'Sale' : (p.category.toLowerCase() === 'lease' ? 'Rent' : 'Sale'),
-        status: 'Active',
-        views: Math.floor(Math.random() * 500) + 50,
-        inquiries: Math.floor(Math.random() * 20),
-        createdAt: 'Oct 10, 2026',
-        description: p.description,
-        image: p.image
-    })),
-    savedProperties: [],
-    recentViews: []
+    // Populated live from Firestore once ZibaDB is ready — was previously
+    // captured once at parse time from property.js's global `properties`,
+    // which is empty at that instant since Firestore hasn't responded yet.
+    properties: [],
+    propertiesLoaded: false,
+    // Shared with property.html / property_details.html via the same
+    // localStorage keys, so saving a property anywhere on the site shows
+    // up here too instead of two disconnected "saved" concepts.
+    savedProperties: readWishlist(),
+    recentViews: readRecentViews()
 };
+
+function readWishlist() {
+    try { return JSON.parse(localStorage.getItem('zibaWishlist') || '[]'); }
+    catch { return []; }
+}
+function writeWishlist(ids) {
+    localStorage.setItem('zibaWishlist', JSON.stringify(ids));
+}
+function readRecentViews() {
+    try { return JSON.parse(localStorage.getItem('zibaRecentViews') || '[]'); }
+    catch { return []; }
+}
+function writeRecentViews(ids) {
+    localStorage.setItem('zibaRecentViews', JSON.stringify(ids));
+}
 
 const icons = {
     home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
@@ -49,6 +58,45 @@ function init() {
     updateBadge();
     renderPage();
     bindEvents();
+
+    const waitForDb = setInterval(() => {
+        if (typeof window.ZibaDB === 'undefined') return;
+        clearInterval(waitForDb);
+
+        window.ZibaDB.watchActiveListings((listings) => {
+            state.properties = listings.map(listingToDisplayProperty);
+            state.propertiesLoaded = true;
+            if (state.currentPage !== 'dashboard') renderPage();
+            else renderPage(); // dashboard stats also depend on this data
+        });
+    }, 100);
+}
+
+// Maps a raw Firestore listing onto the shape this dashboard's rendering
+// already expects, keeping real values (views/inquiries/createdAt) instead
+// of the random placeholder numbers this used to generate.
+function listingToDisplayProperty(listing) {
+    const createdLabel = listing.createdAt && listing.createdAt.toDate
+        ? listing.createdAt.toDate().toLocaleDateString()
+        : '--';
+    return {
+        id: listing.id,
+        title: listing.title || 'Untitled property',
+        location: listing.location || '',
+        price: listing.price || '',
+        type: listing.type || '',
+        listingType: listing.listingType || 'Sale',
+        status: listing.status || 'Active',
+        views: listing.views || 0,
+        inquiries: listing.inquiries || 0,
+        createdAt: createdLabel,
+        description: listing.description || '',
+        image: listing.image || null,
+        uid: listing.uid || null,
+        contactName: listing.contactName || listing.agentName || 'Listing agent',
+        contactEmail: listing.contactEmail || '',
+        contactPhone: listing.contactPhone || ''
+    };
 }
 
 function updateBadge() {
@@ -386,6 +434,7 @@ function toggleSave(propId) {
         state.savedProperties.push(propId);
         showToast('Added to saved properties', 'success');
     }
+    writeWishlist(state.savedProperties);
     updateBadge();
     if (state.currentPage === 'saved' || state.currentPage === 'browse') renderPage();
 }
@@ -398,6 +447,7 @@ function openPropertyDetails(propId) {
     if (rvIdx > -1) state.recentViews.splice(rvIdx, 1);
     state.recentViews.unshift(propId);
     if (state.recentViews.length > 20) state.recentViews.pop();
+    writeRecentViews(state.recentViews);
 
     const isSaved = state.savedProperties.includes(propId);
     const modal = $('#propertyDetailsModal');
@@ -421,6 +471,11 @@ function openPropertyDetails(propId) {
         <div class="detail-section">
             <h4 class="detail-section-title">${icons.mapPin} Location</h4>
             <p class="detail-description">${p.location}</p>
+        </div>
+
+        <div class="detail-section">
+            <h4 class="detail-section-title">Listed by</h4>
+            <p class="detail-description">${p.contactName}${p.contactEmail ? ` &middot; <a href="mailto:${p.contactEmail}">${p.contactEmail}</a>` : ''}${p.contactPhone ? ` &middot; <a href="tel:${p.contactPhone}">${p.contactPhone}</a>` : ''}</p>
         </div>
 
         <div class="detail-section">
@@ -477,6 +532,10 @@ function renderStatusBadge(status) {
 function openInquiryModal(propId) {
     $('#inquiryForm').reset();
     $('#inquiryPropId').value = propId;
+    if (typeof window.ZibaDB !== 'undefined') {
+        const user = window.ZibaDB.getCurrentUser();
+        if (user) $('#inquiryEmail').value = user.email;
+    }
     $('#inquiryModal').classList.add('active');
 }
 
@@ -534,9 +593,41 @@ function bindEvents() {
         e.preventDefault();
         const propId = $('#inquiryPropId').value;
         const p = state.properties.find(x => x.id === propId);
-        if (p) p.inquiries++;
-        showToast('Inquiry sent successfully!', 'success');
-        closeModal('inquiryModal');
+        if (!p) return;
+
+        if (typeof window.ZibaDB === 'undefined') {
+            showToast('Not connected — try refreshing the page', 'error');
+            return;
+        }
+        const user = window.ZibaDB.getCurrentUser();
+        if (!user) {
+            showToast('Please sign in to send an inquiry', 'error');
+            closeModal('inquiryModal');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+
+        window.ZibaDB.submitInquiry({
+            listingId: p.id,
+            listingTitle: p.title,
+            agentUid: p.uid,
+            buyerUid: user.uid,
+            name: $('#inquiryName').value.trim(),
+            email: $('#inquiryEmail').value.trim(),
+            phone: $('#inquiryPhone').value.trim(),
+            message: $('#inquiryMessage').value.trim()
+        }).then(() => {
+            showToast('Inquiry sent successfully!', 'success');
+            closeModal('inquiryModal');
+        }).catch((err) => {
+            console.error('Could not send inquiry:', err);
+            showToast('Could not send your inquiry — try again', 'error');
+        }).finally(() => {
+            btn.disabled = false;
+        });
     });
 
     // Keyboard: Escape to close modals

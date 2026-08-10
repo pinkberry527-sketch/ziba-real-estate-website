@@ -43,6 +43,8 @@ const auth = getAuth(app);
 const APPLICATIONS_COLLECTION = "applications";
 const USERS_COLLECTION = "users";
 const LISTINGS_COLLECTION = "listings";
+const REPORTS_COLLECTION = "reports";
+const INQUIRIES_COLLECTION = "inquiries";
 
 /* ---------- Applicant-facing: submit + watch one application ---------- */
 
@@ -58,9 +60,15 @@ async function submitApplication(data) {
     // plain single-document get — which security rules can safely scope to
     // "your own record only". A list-query filtered by uid can't be scoped
     // that way in Firestore rules, so we deliberately avoid needing one.
+    //
+    // Also copy phone/businessName onto the account itself (not just the
+    // application) — this is what lets a listing show real agent contact
+    // info without needing a separate read of someone else's user doc.
     if (data.uid) {
         await updateDoc(doc(db, USERS_COLLECTION, data.uid), {
-            latestApplicationId: docRef.id
+            latestApplicationId: docRef.id,
+            ...(data.phone ? { phone: data.phone } : {}),
+            ...(data.businessName ? { businessName: data.businessName } : {})
         });
     }
 
@@ -243,6 +251,100 @@ function watchActiveListings(callback) {
     });
 }
 
+// One-time fetch for property_details.html — a live listener isn't needed
+// there since the page doesn't need to react to the listing changing while
+// someone's reading it.
+async function getListing(listingId) {
+    const snap = await getDoc(doc(db, LISTINGS_COLLECTION, listingId));
+    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+}
+
+// Best-effort — a view counter is a nice-to-have, not something that should
+// ever block the page if it fails (e.g. offline).
+async function incrementListingViews(listingId) {
+    try {
+        const ref = doc(db, LISTINGS_COLLECTION, listingId);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        await updateDoc(ref, { views: (snap.data().views || 0) + 1 });
+    } catch (err) {
+        console.error("incrementListingViews failed (non-fatal):", err);
+    }
+}
+
+/* ---------- Agent reports (buyer flags a listing/agent for review) ---------- */
+
+async function submitReport(data) {
+    const docRef = await addDoc(collection(db, REPORTS_COLLECTION), {
+        ...data,
+        status: "open",
+        createdAt: serverTimestamp()
+    });
+    return docRef.id;
+}
+
+// Admin-only (enforced by security rules) — every report, newest first.
+// Not split into status tabs like applications, since a single small queue
+// with inline badges is enough for this volume.
+function watchReports(callback) {
+    const q = query(collection(db, REPORTS_COLLECTION), orderBy("createdAt", "desc"));
+    return onSnapshot(q, (snap) => {
+        const items = [];
+        snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+        callback(items);
+    }, (err) => {
+        console.error("watchReports error:", err);
+        callback([]);
+    });
+}
+
+async function setReportStatus(reportId, status, reviewerEmail) {
+    await updateDoc(doc(db, REPORTS_COLLECTION, reportId), {
+        status,
+        reviewedAt: serverTimestamp(),
+        reviewedBy: reviewerEmail || null
+    });
+}
+
+/* ---------- Buyer inquiries (contact-the-agent form) ---------- */
+
+async function submitInquiry(data) {
+    const docRef = await addDoc(collection(db, INQUIRIES_COLLECTION), {
+        ...data,
+        createdAt: serverTimestamp()
+    });
+    // Best-effort — a stale inquiry count shouldn't block the inquiry itself.
+    incrementListingInquiries(data.listingId).catch((err) =>
+        console.error("incrementListingInquiries failed (non-fatal):", err)
+    );
+    return docRef.id;
+}
+
+async function incrementListingInquiries(listingId) {
+    const ref = doc(db, LISTINGS_COLLECTION, listingId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+    await updateDoc(ref, { inquiries: (snap.data().inquiries || 0) + 1 });
+}
+
+// Live-updates callback(inquiriesArray) with everything sent to a given
+// agent, newest first.
+function watchAgentInquiries(agentUid, callback) {
+    const q = query(
+        collection(db, INQUIRIES_COLLECTION),
+        where("agentUid", "==", agentUid),
+        orderBy("createdAt", "desc")
+    );
+    return onSnapshot(q, (snap) => {
+        const items = [];
+        snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+        callback(items);
+    }, (err) => {
+        console.error("watchAgentInquiries error:", err);
+        callback([]);
+    });
+}
+
 window.ZibaDB = {
     submitApplication,
     watchApplication,
@@ -252,8 +354,15 @@ window.ZibaDB = {
     createListing,
     updateListing,
     deleteListing,
+    getListing,
+    incrementListingViews,
     watchAgentListings,
     watchActiveListings,
+    submitReport,
+    watchReports,
+    setReportStatus,
+    submitInquiry,
+    watchAgentInquiries,
     registerUser,
     loginUser,
     getUserProfile,
