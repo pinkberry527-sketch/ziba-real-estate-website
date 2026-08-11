@@ -331,7 +331,7 @@ const Auth = (() => {
                             }
                         } else {
                             setTimeout(() => {
-                                window.location.href = 'index.html';
+                                window.location.href = 'dashuser.html';
                             }, 700);
                         }
                     })
@@ -412,7 +412,7 @@ const Auth = (() => {
                         } else {
                             showToast('Welcome to Ziba!', 'success');
                             setTimeout(() => {
-                                window.location.href = 'index.html';
+                                window.location.href = 'dashuser.html';
                             }, 700);
                         }
                     })
