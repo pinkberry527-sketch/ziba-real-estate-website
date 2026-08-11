@@ -4,6 +4,9 @@
 
 const state = {
     currentPage: 'dashboard',
+    userUid: null,
+    userName: 'User',
+    userInitials: 'U',
     // Populated live from Firestore once ZibaDB is ready — was previously
     // captured once at parse time from property.js's global `properties`,
     // which is empty at that instant since Firestore hasn't responded yet.
@@ -50,11 +53,17 @@ const icons = {
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-document.addEventListener('DOMContentLoaded', () => {
-    init();
-});
-
-function init() {
+// NOTE: initialization no longer runs automatically on DOMContentLoaded.
+// The page's auth-guard script (in dashuser.html) confirms this visitor is
+// a signed-in buyer first, then calls window.ZibaInitUserDashboard() with
+// their real profile. This is the same pattern dash.html uses for agents —
+// previously this page had no guard at all and always showed a hardcoded
+// "Tobi Moffy" placeholder regardless of who was actually signed in.
+window.ZibaInitUserDashboard = function (userProfile) {
+    state.userUid = userProfile && userProfile.uid;
+    state.userName = (userProfile && userProfile.fullName) || 'User';
+    state.userInitials = getInitials(state.userName);
+    renderSidebarIdentity();
     updateBadge();
     renderPage();
     bindEvents();
@@ -66,10 +75,23 @@ function init() {
         window.ZibaDB.watchActiveListings((listings) => {
             state.properties = listings.map(listingToDisplayProperty);
             state.propertiesLoaded = true;
-            if (state.currentPage !== 'dashboard') renderPage();
-            else renderPage(); // dashboard stats also depend on this data
+            renderPage();
         });
     }, 100);
+};
+
+function getInitials(name) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return 'U';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function renderSidebarIdentity() {
+    const avatar = $('#sidebarUserAvatar');
+    const name = $('#sidebarUserName');
+    if (avatar) avatar.textContent = state.userInitials;
+    if (name) name.textContent = state.userName;
 }
 
 // Maps a raw Firestore listing onto the shape this dashboard's rendering
@@ -574,6 +596,17 @@ function bindEvents() {
     });
     $('#sidebarClose').addEventListener('click', () => {
         $('#sidebar').classList.remove('open');
+    });
+
+    // Sign out
+    $('#sidebarSignOut')?.addEventListener('click', () => {
+        if (typeof window.ZibaDB === 'undefined') {
+            window.location.href = 'login.html';
+            return;
+        }
+        window.ZibaDB.signOutUser().then(() => {
+            window.location.href = 'login.html';
+        });
     });
 
     // Close modals on overlay click
