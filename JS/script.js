@@ -62,7 +62,7 @@ function mapListingToFeatured(listing) {
     location: listing.location || '',
     price: listing.price || '',
     Type: listing.type || '',
-    category: listing.listingType === 'Rent' ? 'Leasing' : 'Sales',
+    category: listing.listingType === 'Rent' ? 'Leasing' : (listing.listingType === 'Stay' ? 'Stay' : 'Sales'),
     image: listing.image || NO_PHOTO_SVG_FEATURED,
   };
 }
@@ -86,7 +86,7 @@ const renderProperties = (properties) => {
         <p>${property.location}</p>
         <p>${property.price}</p>
         <div class="list_item_content_footer">
-          <a href="property-details.html?id=${property.id}"><button type="button">View Details</button></a>
+          <a href="property_details.html?id=${property.id}"><button type="button">View Details</button></a>
         </div>
       </div>
     </div>
@@ -222,8 +222,8 @@ const agentList = [
     rating: 4.5,
   },
   {
-    agent_name: "Femi",
-    company_name: "Femi Real Estate",
+    agent_name: "Tayo",
+    company_name: "Tayo Real Estate",
     image: "../assets/agent3.jpg",
     verified: true,
     phone: "08012345678",

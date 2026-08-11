@@ -277,6 +277,7 @@ function renderBrowse(container) {
                     <option value="">All Listings</option>
                     <option value="Sale">For Sale</option>
                     <option value="Rent">For Rent</option>
+                    <option value="Stay">For Stay</option>
                 </select>
                 <select class="filter-select" id="filterStatus">
                     <option value="">All Status</option>

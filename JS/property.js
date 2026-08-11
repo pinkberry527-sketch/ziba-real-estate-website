@@ -19,7 +19,7 @@ const NO_PHOTO_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 // file (cards, filters, details page) already expects — keeps everything
 // below unchanged rather than rewriting every render function.
 function mapListingToProperty(listing) {
-  const listingTypeToCategory = { Sale: 'sales', Rent: 'lease' };
+  const listingTypeToCategory = { Sale: 'sales', Rent: 'lease', Stay: 'stay' };
   const createdMs = listing.createdAt && listing.createdAt.toMillis ? listing.createdAt.toMillis() : null;
   const isRecent = createdMs ? (Date.now() - createdMs) < (14 * 24 * 60 * 60 * 1000) : false;
 
@@ -114,7 +114,7 @@ function renderPropertyCards() {
             <span>${property.size} sqm</span>
           </div>
           <div class="card-actions">
-            <a href="property-details.html?id=${property.id}" class="view-btn">View Property</a>
+            <a href="property_details.html?id=${property.id}" class="view-btn">View Property</a>
           </div>
         </div>
       </div>
@@ -163,8 +163,8 @@ function renderWishlistSummary() {
         <div class="wishlist-item">
           <img src="${property.image}" alt="${property.title}">
           <div class="wishlist-item-info">
-            <a class="wishlist-item-title" href="property-details.html?id=${property.id}">${property.title}</a>
-            <span class="wishlist-item-location">${propert.location}</span>
+            <a class="wishlist-item-title" href="property_details.html?id=${property.id}">${property.title}</a>
+            <span class="wishlist-item-location">${property.location}</span>
             <span class="wishlist-item-price">${property.price}</span>
           </div>
         </div>

@@ -682,6 +682,11 @@ img { max-width: 100%; display: block; }
     color: var(--info-color);
 }
 
+.listing-badge--stay {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
 /* -------------------- PROPERTY CARDS (USER) -------------------- */
 .property-card {
     background: var(--card-bg);
